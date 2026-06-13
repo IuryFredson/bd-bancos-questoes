@@ -1,0 +1,847 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{multicol}
+
+\geometry{margin=2.3cm}
+
+\title{Banco de Questões Objetivas -- Aula 13\\Técnicas de Controle de Concorrência}
+\author{Banco de Dados}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Instruções}
+
+Este banco contém questões objetivas sobre os principais tópicos da Aula 13:
+\begin{itemize}
+    \item propósito do controle de concorrência;
+    \item conflitos entre transações;
+    \item bloqueios;
+    \item bloqueio binário;
+    \item bloqueio compartilhado e exclusivo;
+    \item matriz de compatibilidade;
+    \item conversão de bloqueios;
+    \item bloqueio em duas fases;
+    \item 2PL conservador;
+    \item 2PL estrito;
+    \item 2PL rigoroso;
+    \item deadlock;
+    \item starvation.
+\end{itemize}
+
+\section{Questões de Múltipla Escolha}
+
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+
+\item O principal objetivo do controle de concorrência em bancos de dados é:
+
+\begin{enumerate}[label=\alph*)]
+    \item permitir que transações conflitantes acessem os mesmos dados sem qualquer regra.
+    \item forçar isolamento entre transações conflitantes e preservar a consistência do banco.
+    \item eliminar o uso de transações.
+    \item substituir o comando \texttt{COMMIT}.
+\end{enumerate}
+
+\item O controle de concorrência é necessário porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item bancos relacionais não possuem tabelas.
+    \item transações concorrentes podem acessar os mesmos itens de dados e gerar inconsistência.
+    \item SQL não permite leitura de dados.
+    \item toda transação é sempre serial.
+\end{enumerate}
+
+\item Um conflito \textit{read-write} ocorre quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item duas transações apenas leem o mesmo item.
+    \item uma transação lê e outra escreve o mesmo item.
+    \item duas transações leem itens diferentes.
+    \item uma transação cria uma tabela.
+\end{enumerate}
+
+\item Um conflito \textit{write-write} ocorre quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item duas transações escrevem no mesmo item de dado.
+    \item duas transações apenas leem o mesmo item.
+    \item uma transação executa \texttt{SELECT}.
+    \item duas transações acessam tabelas diferentes.
+\end{enumerate}
+
+\item Diante de conflito entre duas transações sobre um item de dado, o controle de concorrência pode decidir que uma transação:
+
+\begin{enumerate}[label=\alph*)]
+    \item sempre será ignorada pelo SGBD.
+    \item terá acesso ao item e a outra deverá esperar ou fazer rollback.
+    \item deve apagar a tabela inteira.
+    \item deve transformar o banco em NoSQL.
+\end{enumerate}
+
+\item Um bloqueio é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item controlar o acesso concorrente a itens de dados.
+    \item remover permanentemente uma tabela.
+    \item criar uma chave primária.
+    \item substituir uma consulta SQL.
+\end{enumerate}
+
+\item No bloqueio binário, um item pode estar:
+
+\begin{enumerate}[label=\alph*)]
+    \item apenas em modo compartilhado.
+    \item bloqueado ou desbloqueado.
+    \item apenas em modo exclusivo.
+    \item sempre disponível para escrita.
+\end{enumerate}
+
+\item Se um item está bloqueado por uma transação em bloqueio binário, outra transação que deseja acessá-lo deve:
+
+\begin{enumerate}[label=\alph*)]
+    \item esperar ou ser abortada, dependendo do protocolo.
+    \item modificar o item mesmo assim.
+    \item apagar o item.
+    \item ignorar o bloqueio.
+\end{enumerate}
+
+\item Uma limitação do bloqueio binário é que:
+
+\begin{enumerate}[label=\alph*)]
+    \item ele permite distinguir bem leitura compartilhada de escrita exclusiva.
+    \item ele não diferencia leitura de escrita.
+    \item ele elimina deadlocks automaticamente.
+    \item ele não usa nenhum estado de bloqueio.
+\end{enumerate}
+
+\item Bloqueios compartilhados e exclusivos são usados para:
+
+\begin{enumerate}[label=\alph*)]
+    \item permitir maior concorrência entre leituras e controlar escritas.
+    \item impedir toda leitura no banco.
+    \item remover a necessidade de transações.
+    \item substituir dependências funcionais.
+\end{enumerate}
+
+\item O bloqueio compartilhado também pode ser chamado de:
+
+\begin{enumerate}[label=\alph*)]
+    \item bloqueio de leitura.
+    \item bloqueio de escrita.
+    \item bloqueio de remoção.
+    \item bloqueio de esquema.
+\end{enumerate}
+
+\item O bloqueio exclusivo também pode ser chamado de:
+
+\begin{enumerate}[label=\alph*)]
+    \item bloqueio de leitura.
+    \item bloqueio de escrita.
+    \item bloqueio nulo.
+    \item bloqueio parcial.
+\end{enumerate}
+
+\item Se uma transação deseja apenas ler um item, ela deve solicitar normalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item bloqueio exclusivo.
+    \item bloqueio compartilhado.
+    \item remoção do bloqueio.
+    \item \texttt{ROLLBACK}.
+\end{enumerate}
+
+\item Se uma transação deseja escrever em um item, ela deve solicitar normalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item bloqueio exclusivo.
+    \item bloqueio compartilhado.
+    \item apenas leitura.
+    \item \texttt{SELECT DISTINCT}.
+\end{enumerate}
+
+\item Dois bloqueios compartilhados sobre o mesmo item são geralmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item incompatíveis.
+    \item compatíveis.
+    \item impossíveis em qualquer SGBD.
+    \item equivalentes a rollback.
+\end{enumerate}
+
+\item Um bloqueio compartilhado e um bloqueio exclusivo sobre o mesmo item são geralmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item compatíveis.
+    \item incompatíveis.
+    \item sempre permitidos simultaneamente.
+    \item irrelevantes para concorrência.
+\end{enumerate}
+
+\item Dois bloqueios exclusivos sobre o mesmo item são geralmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item compatíveis.
+    \item incompatíveis.
+    \item obrigatórios para leitura.
+    \item permitidos se forem transações diferentes.
+\end{enumerate}
+
+\item A matriz de compatibilidade de bloqueios serve para indicar:
+
+\begin{enumerate}[label=\alph*)]
+    \item quais bloqueios podem coexistir sobre o mesmo item.
+    \item quais tabelas devem ser normalizadas.
+    \item quais comandos SQL são DDL.
+    \item quais transações já foram apagadas.
+\end{enumerate}
+
+\item A conversão de bloqueio de compartilhado para exclusivo é chamada de:
+
+\begin{enumerate}[label=\alph*)]
+    \item downgrade.
+    \item upgrade.
+    \item rollback.
+    \item checkpoint.
+\end{enumerate}
+
+\item A conversão de bloqueio de exclusivo para compartilhado é chamada de:
+
+\begin{enumerate}[label=\alph*)]
+    \item upgrade.
+    \item downgrade.
+    \item commit.
+    \item deadlock.
+\end{enumerate}
+
+\item O uso de bloqueios binários, sozinho, garante sempre a serialização dos planos?
+
+\begin{enumerate}[label=\alph*)]
+    \item Sim, sempre.
+    \item Não, é necessário seguir um protocolo adicional.
+    \item Sim, porque todo bloqueio binário é 2PL.
+    \item Não, porque bloqueios nunca ajudam na serialização.
+\end{enumerate}
+
+\item Para garantir serialização com bloqueios, é necessário controlar principalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item o posicionamento das operações de bloqueio e desbloqueio.
+    \item apenas o nome das tabelas.
+    \item apenas o número de atributos.
+    \item apenas o tipo de dado das colunas.
+\end{enumerate}
+
+\item O protocolo de bloqueio em duas fases é conhecido como:
+
+\begin{enumerate}[label=\alph*)]
+    \item 1NF.
+    \item 2PL.
+    \item DDL.
+    \item SQLJ.
+\end{enumerate}
+
+\item No protocolo de bloqueio em duas fases, todas as operações de \texttt{lock} devem ocorrer:
+
+\begin{enumerate}[label=\alph*)]
+    \item depois do primeiro \texttt{unlock}.
+    \item antes da primeira operação de \texttt{unlock}.
+    \item somente após o \texttt{COMMIT}.
+    \item somente depois do \texttt{ROLLBACK}.
+\end{enumerate}
+
+\item A primeira fase do bloqueio em duas fases é chamada de:
+
+\begin{enumerate}[label=\alph*)]
+    \item fase de encolhimento.
+    \item fase de expansão.
+    \item fase de recuperação.
+    \item fase de normalização.
+\end{enumerate}
+
+\item Na fase de expansão de uma transação em 2PL, a transação pode:
+
+\begin{enumerate}[label=\alph*)]
+    \item adquirir bloqueios.
+    \item liberar bloqueios apenas.
+    \item confirmar obrigatoriamente.
+    \item apagar o log.
+\end{enumerate}
+
+\item A segunda fase do bloqueio em duas fases é chamada de:
+
+\begin{enumerate}[label=\alph*)]
+    \item fase de expansão.
+    \item fase de encolhimento.
+    \item fase de definição.
+    \item fase de projeção.
+\end{enumerate}
+
+\item Na fase de encolhimento de uma transação em 2PL, a transação pode:
+
+\begin{enumerate}[label=\alph*)]
+    \item adquirir novos bloqueios.
+    \item liberar bloqueios.
+    \item criar novas tabelas.
+    \item iniciar outra fase de expansão.
+\end{enumerate}
+
+\item Em 2PL, depois que uma transação libera seu primeiro bloqueio:
+
+\begin{enumerate}[label=\alph*)]
+    \item ela pode adquirir novos bloqueios livremente.
+    \item ela não deve adquirir novos bloqueios.
+    \item ela deve apagar todos os dados.
+    \item ela deixa de ser uma transação.
+\end{enumerate}
+
+\item O protocolo 2PL garante:
+
+\begin{enumerate}[label=\alph*)]
+    \item serializabilidade por conflito.
+    \item ausência absoluta de deadlock.
+    \item ausência absoluta de espera.
+    \item impossibilidade de rollback.
+\end{enumerate}
+
+\item Uma desvantagem do 2PL básico é que:
+
+\begin{enumerate}[label=\alph*)]
+    \item pode ocorrer deadlock.
+    \item nunca permite concorrência.
+    \item não garante serializabilidade.
+    \item elimina todos os bloqueios.
+\end{enumerate}
+
+\item Deadlock ocorre quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item duas ou mais transações ficam esperando indefinidamente por recursos bloqueados umas pelas outras.
+    \item uma transação confirma normalmente.
+    \item uma transação executa apenas leitura.
+    \item duas transações leem o mesmo item ao mesmo tempo.
+\end{enumerate}
+
+\item Um exemplo típico de deadlock é:
+
+\begin{enumerate}[label=\alph*)]
+    \item $T_1$ espera por item bloqueado por $T_2$, enquanto $T_2$ espera por item bloqueado por $T_1$.
+    \item $T_1$ lê um item e $T_2$ lê o mesmo item.
+    \item $T_1$ confirma e $T_2$ inicia.
+    \item $T_1$ executa \texttt{SELECT} sem \texttt{WHERE}.
+\end{enumerate}
+
+\item Para lidar com deadlock, o SGBD pode:
+
+\begin{enumerate}[label=\alph*)]
+    \item abortar uma das transações envolvidas.
+    \item remover todas as tabelas do banco.
+    \item ignorar todos os bloqueios.
+    \item transformar bloqueios exclusivos em valores nulos.
+\end{enumerate}
+
+\item Starvation ocorre quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma transação espera indefinidamente e nunca consegue prosseguir.
+    \item uma transação confirma rapidamente.
+    \item uma transação não precisa de nenhum bloqueio.
+    \item duas transações leem o mesmo item simultaneamente.
+\end{enumerate}
+
+\item Starvation pode ocorrer quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma transação é sempre preterida em favor de outras.
+    \item todas as transações são atendidas de forma justa.
+    \item nenhuma transação entra em espera.
+    \item o banco não possui concorrência.
+\end{enumerate}
+
+\item Uma forma de reduzir starvation é:
+
+\begin{enumerate}[label=\alph*)]
+    \item usar política justa de escalonamento, como fila.
+    \item sempre abortar a mesma transação.
+    \item impedir todo bloqueio compartilhado.
+    \item apagar o banco periodicamente.
+\end{enumerate}
+
+\item O 2PL conservador também é conhecido como:
+
+\begin{enumerate}[label=\alph*)]
+    \item 2PL estático.
+    \item 2PL nulo.
+    \item 2PL sem bloqueios.
+    \item 2PL com dirty read.
+\end{enumerate}
+
+\item No 2PL conservador, uma transação deve:
+
+\begin{enumerate}[label=\alph*)]
+    \item obter todos os bloqueios de que precisa antes de iniciar sua execução.
+    \item liberar todos os bloqueios antes de executar qualquer leitura.
+    \item nunca solicitar bloqueios.
+    \item sempre executar sem esperar.
+\end{enumerate}
+
+\item Uma vantagem do 2PL conservador é:
+
+\begin{enumerate}[label=\alph*)]
+    \item prevenir deadlocks.
+    \item permitir escrita sem bloqueio.
+    \item eliminar a necessidade de isolamento.
+    \item impedir serializabilidade.
+\end{enumerate}
+
+\item Uma desvantagem do 2PL conservador é:
+
+\begin{enumerate}[label=\alph*)]
+    \item reduzir a concorrência, pois exige bloqueios antecipados.
+    \item permitir deadlock obrigatoriamente.
+    \item não usar bloqueios.
+    \item impedir toda leitura.
+\end{enumerate}
+
+\item No 2PL estrito, os bloqueios exclusivos geralmente são mantidos até:
+
+\begin{enumerate}[label=\alph*)]
+    \item o fim da transação.
+    \item antes da primeira leitura.
+    \item antes de qualquer escrita.
+    \item a criação da tabela.
+\end{enumerate}
+
+\item O 2PL estrito ajuda principalmente a:
+
+\begin{enumerate}[label=\alph*)]
+    \item facilitar a recuperação e evitar cascata de abortos.
+    \item eliminar todas as consultas.
+    \item remover o uso de \texttt{COMMIT}.
+    \item impedir qualquer concorrência de leitura.
+\end{enumerate}
+
+\item No 2PL rigoroso, os bloqueios compartilhados e exclusivos são mantidos até:
+
+\begin{enumerate}[label=\alph*)]
+    \item o fim da transação.
+    \item a primeira operação de leitura.
+    \item antes da primeira escrita.
+    \item o início da transação.
+\end{enumerate}
+
+\item Comparado ao 2PL estrito, o 2PL rigoroso é:
+
+\begin{enumerate}[label=\alph*)]
+    \item mais restritivo.
+    \item menos restritivo.
+    \item idêntico ao bloqueio binário simples.
+    \item incompatível com transações.
+\end{enumerate}
+
+\item O 2PL estrito ainda pode gerar:
+
+\begin{enumerate}[label=\alph*)]
+    \item deadlocks.
+    \item ausência total de espera.
+    \item ausência de bloqueios.
+    \item impossibilidade de serialização.
+\end{enumerate}
+
+\item Quando uma transação mantém bloqueios até o \texttt{COMMIT}, isso pode ajudar a evitar:
+
+\begin{enumerate}[label=\alph*)]
+    \item leitura de dados não confirmados.
+    \item criação de tabelas.
+    \item uso de chaves estrangeiras.
+    \item consultas com \texttt{GROUP BY}.
+\end{enumerate}
+
+\item O controle de concorrência está diretamente relacionado à propriedade ACID de:
+
+\begin{enumerate}[label=\alph*)]
+    \item isolamento.
+    \item durabilidade apenas.
+    \item atomicidade apenas.
+    \item normalização.
+\end{enumerate}
+
+\item Também contribui para preservar a propriedade de:
+
+\begin{enumerate}[label=\alph*)]
+    \item consistência.
+    \item 1FN.
+    \item BCNF.
+    \item criptografia.
+\end{enumerate}
+
+\item Em geral, uma transação que não consegue obter um bloqueio compatível deve:
+
+\begin{enumerate}[label=\alph*)]
+    \item esperar ou ser abortada, conforme o protocolo.
+    \item ignorar a incompatibilidade.
+    \item escrever mesmo assim.
+    \item apagar o bloqueio de outra transação.
+\end{enumerate}
+
+\item Se $T_1$ possui bloqueio compartilhado em $X$, $T_2$ pode obter bloqueio compartilhado em $X$?
+
+\begin{enumerate}[label=\alph*)]
+    \item Sim, normalmente é compatível.
+    \item Não, nunca.
+    \item Sim, mas apenas se for para escrever.
+    \item Não, porque leituras sempre conflitam.
+\end{enumerate}
+
+\item Se $T_1$ possui bloqueio exclusivo em $X$, $T_2$ pode obter bloqueio compartilhado em $X$ ao mesmo tempo?
+
+\begin{enumerate}[label=\alph*)]
+    \item Sim, sempre.
+    \item Não, normalmente é incompatível.
+    \item Sim, se $T_2$ for mais antiga.
+    \item Sim, se $X$ for chave primária.
+\end{enumerate}
+
+\item Se $T_1$ possui bloqueio compartilhado em $X$ e deseja escrever em $X$, ela precisa:
+
+\begin{enumerate}[label=\alph*)]
+    \item converter o bloqueio compartilhado para exclusivo.
+    \item converter o bloqueio exclusivo para compartilhado.
+    \item executar \texttt{DROP TABLE}.
+    \item remover a transação.
+\end{enumerate}
+
+\item Se uma transação começa liberando bloqueios e depois tenta adquirir novos bloqueios, ela viola:
+
+\begin{enumerate}[label=\alph*)]
+    \item o protocolo de bloqueio em duas fases.
+    \item a 1FN.
+    \item a sintaxe de \texttt{SELECT}.
+    \item a restrição \texttt{NOT NULL}.
+\end{enumerate}
+
+\item Uma execução concorrente correta deve produzir efeito equivalente a:
+
+\begin{enumerate}[label=\alph*)]
+    \item alguma execução serial das transações.
+    \item uma execução sem transações.
+    \item uma execução com todas as transações abortadas.
+    \item uma execução sem leituras.
+\end{enumerate}
+
+\item Bloqueios ajudam a garantir serializabilidade porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item controlam a ordem de acesso a itens conflitantes.
+    \item eliminam a necessidade de consistência.
+    \item impedem qualquer transação de terminar.
+    \item substituem o modelo relacional.
+\end{enumerate}
+
+\item A técnica de bloqueio em duas fases está relacionada principalmente a:
+
+\begin{enumerate}[label=\alph*)]
+    \item protocolos para garantir propriedades de planos de execução.
+    \item criação de atributos multivalorados.
+    \item criptografia de senhas.
+    \item normalização de relações.
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Questões de Verdadeiro ou Falso}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) O controle de concorrência busca preservar a consistência do banco.
+    \item ( \quad ) O controle de concorrência ajuda a resolver conflitos entre transações.
+    \item ( \quad ) Conflitos \textit{read-write} e \textit{write-write} são relevantes para concorrência.
+    \item ( \quad ) Controle de concorrência elimina a necessidade de transações.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Bloqueios controlam acesso a itens de dados.
+    \item ( \quad ) Bloqueio binário possui os estados bloqueado e desbloqueado.
+    \item ( \quad ) Bloqueio binário diferencia leitura e escrita.
+    \item ( \quad ) Bloqueios podem fazer transações esperarem.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Bloqueio compartilhado é usado para leitura.
+    \item ( \quad ) Bloqueio exclusivo é usado para escrita.
+    \item ( \quad ) Dois bloqueios compartilhados são geralmente compatíveis.
+    \item ( \quad ) Dois bloqueios exclusivos sobre o mesmo item são geralmente compatíveis.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Um bloqueio compartilhado é incompatível com bloqueio exclusivo no mesmo item.
+    \item ( \quad ) Upgrade converte bloqueio compartilhado em exclusivo.
+    \item ( \quad ) Downgrade converte bloqueio exclusivo em compartilhado.
+    \item ( \quad ) Conversão de bloqueios nunca ocorre em protocolos de concorrência.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) O uso de bloqueio binário sozinho não garante serialização.
+    \item ( \quad ) Um protocolo adicional pode ser necessário para garantir serialização.
+    \item ( \quad ) O posicionamento de bloqueios e desbloqueios é importante.
+    \item ( \quad ) Bloqueios não possuem relação com serializabilidade.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) No 2PL, todos os bloqueios devem ser adquiridos antes do primeiro desbloqueio.
+    \item ( \quad ) A fase de expansão permite adquirir bloqueios.
+    \item ( \quad ) A fase de encolhimento permite liberar bloqueios.
+    \item ( \quad ) Depois de liberar um bloqueio, a transação pode adquirir novos bloqueios no 2PL básico.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) O 2PL garante serializabilidade por conflito.
+    \item ( \quad ) O 2PL básico pode gerar deadlock.
+    \item ( \quad ) Deadlock envolve espera circular.
+    \item ( \quad ) Deadlock nunca exige intervenção do SGBD.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) 2PL conservador tenta obter todos os bloqueios antes da execução.
+    \item ( \quad ) 2PL conservador pode prevenir deadlocks.
+    \item ( \quad ) 2PL conservador pode reduzir concorrência.
+    \item ( \quad ) 2PL conservador dispensa bloqueios.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) 2PL estrito mantém bloqueios exclusivos até o fim da transação.
+    \item ( \quad ) 2PL estrito ajuda na recuperação.
+    \item ( \quad ) 2PL rigoroso mantém bloqueios compartilhados e exclusivos até o fim.
+    \item ( \quad ) 2PL rigoroso é menos restritivo que 2PL estrito.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Deadlocks podem ocorrer em protocolos de bloqueio.
+    \item ( \quad ) Uma forma de lidar com deadlock é abortar uma transação.
+    \item ( \quad ) Starvation ocorre quando uma transação espera indefinidamente.
+    \item ( \quad ) Starvation é sempre desejável para melhorar desempenho.
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Questões de Aplicação Objetiva}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item $T_1$ possui bloqueio compartilhado em $A$. $T_2$ deseja ler $A$. O que normalmente acontece?
+
+\begin{enumerate}[label=\alph*)]
+    \item $T_2$ pode obter bloqueio compartilhado em $A$.
+    \item $T_2$ deve sempre abortar.
+    \item $T_2$ precisa de bloqueio exclusivo.
+    \item $T_1$ deve fazer rollback imediatamente.
+\end{enumerate}
+
+\item $T_1$ possui bloqueio compartilhado em $A$. $T_2$ deseja escrever em $A$. O que normalmente acontece?
+
+\begin{enumerate}[label=\alph*)]
+    \item $T_2$ precisa esperar ou ser abortada, pois precisa de bloqueio exclusivo incompatível.
+    \item $T_2$ pode escrever livremente.
+    \item $T_2$ só precisa de bloqueio compartilhado.
+    \item $T_1$ e $T_2$ podem escrever juntas.
+\end{enumerate}
+
+\item $T_1$ possui bloqueio exclusivo em $A$. $T_2$ deseja ler $A$. O que normalmente acontece?
+
+\begin{enumerate}[label=\alph*)]
+    \item $T_2$ pode ler normalmente.
+    \item $T_2$ deve esperar ou ser abortada.
+    \item $T_2$ ganha prioridade automática.
+    \item $T_1$ perde o bloqueio sem liberar.
+\end{enumerate}
+
+\item Considere a sequência de uma transação:
+\[
+lock(A),\ read(A),\ unlock(A),\ lock(B),\ read(B),\ unlock(B)
+\]
+Ela viola 2PL?
+
+\begin{enumerate}[label=\alph*)]
+    \item Sim, pois adquire novo bloqueio depois de liberar um bloqueio.
+    \item Não, pois toda transação pode alternar lock e unlock livremente.
+    \item Não, pois só existem leituras.
+    \item Sim, porque não possui escrita.
+\end{enumerate}
+
+\item Considere a sequência:
+\[
+lock(A),\ lock(B),\ read(A),\ write(B),\ unlock(A),\ unlock(B)
+\]
+Ela respeita 2PL?
+
+\begin{enumerate}[label=\alph*)]
+    \item Sim, pois todos os bloqueios foram adquiridos antes do primeiro unlock.
+    \item Não, pois 2PL proíbe dois bloqueios.
+    \item Não, pois há leitura e escrita.
+    \item Sim, mas apenas se não existir \texttt{COMMIT}.
+\end{enumerate}
+
+\item $T_1$ bloqueia $A$ e espera por $B$. $T_2$ bloqueia $B$ e espera por $A$. Isso caracteriza:
+
+\begin{enumerate}[label=\alph*)]
+    \item deadlock.
+    \item starvation apenas.
+    \item normalização.
+    \item autocommit.
+\end{enumerate}
+
+\item Uma transação é continuamente abortada para liberar recursos para outras e nunca consegue terminar. Isso caracteriza:
+
+\begin{enumerate}[label=\alph*)]
+    \item starvation.
+    \item serialização.
+    \item 1FN.
+    \item bloqueio compartilhado compatível.
+\end{enumerate}
+
+\item Uma transação precisa ler e depois escrever o mesmo item $X$. Inicialmente, ela tem bloqueio compartilhado em $X$. Para escrever, precisa realizar:
+
+\begin{enumerate}[label=\alph*)]
+    \item upgrade para bloqueio exclusivo.
+    \item downgrade para bloqueio compartilhado.
+    \item checkpoint.
+    \item \texttt{DROP TABLE}.
+\end{enumerate}
+
+\item Qual protocolo seria mais adequado para evitar deadlocks obtendo todos os bloqueios antes de executar?
+
+\begin{enumerate}[label=\alph*)]
+    \item 2PL conservador.
+    \item 2PL básico sem restrições.
+    \item Bloqueio binário sem protocolo.
+    \item Execução sem bloqueios.
+\end{enumerate}
+
+\item Qual variação mantém bloqueios exclusivos até o final da transação e ajuda a evitar leitura de dados não confirmados?
+
+\begin{enumerate}[label=\alph*)]
+    \item 2PL estrito.
+    \item 2PL conservador apenas.
+    \item Bloqueio binário sem protocolo.
+    \item Ausência de bloqueio.
+\end{enumerate}
+
+\end{enumerate}
+
+\newpage
+
+\section*{Gabarito}
+
+\begin{multicols}{2}
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+    \item b
+    \item b
+    \item b
+    \item a
+    \item b
+    \item a
+    \item b
+    \item a
+    \item b
+    \item a
+    \item a
+    \item b
+    \item b
+    \item a
+    \item b
+    \item b
+    \item b
+    \item a
+    \item b
+    \item b
+    \item b
+    \item a
+    \item b
+    \item b
+    \item b
+    \item a
+    \item b
+    \item b
+    \item b
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item b
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item V, V, V, F
+    \item V, V, F, V
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item a
+    \item a
+    \item b
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+\end{enumerate}
+\end{multicols}
+
+\end{document}

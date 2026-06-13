@@ -1,0 +1,664 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\geometry{margin=2.5cm}
+
+\title{Banco de Questões -- Aula 09\\Dependência Funcional e Normalização}
+\author{Banco de Dados}
+\date{}
+
+\newtcolorbox{resposta}{
+  colback=gray!5,
+  colframe=black!40,
+  title=Resposta comentada
+}
+
+\begin{document}
+
+\maketitle
+
+\section*{Orientações}
+
+Este banco de questões cobre os principais tópicos da Aula 09:
+\begin{itemize}
+    \item medidas informais de qualidade de esquemas relacionais;
+    \item semântica dos atributos;
+    \item redundância;
+    \item valores nulos;
+    \item tuplas ilegítimas;
+    \item dependência funcional;
+    \item formas normais;
+    \item 1FN, 2FN, 3FN e BCNF;
+    \item cobertura mínima de dependências funcionais.
+\end{itemize}
+
+\section{Questões Conceituais}
+
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+
+\item O que a normalização busca melhorar em um projeto de banco de dados relacional?
+
+\begin{resposta}
+A normalização busca organizar os atributos em relações de forma mais adequada, reduzindo redundâncias, evitando anomalias e melhorando a qualidade do esquema relacional. Ela ajuda a garantir que cada tabela represente bem um conjunto de fatos do minimundo.
+\end{resposta}
+
+\item Cite as quatro medidas informais de qualidade apresentadas na aula.
+
+\begin{resposta}
+As quatro medidas são:
+\begin{enumerate}
+    \item semântica dos atributos;
+    \item redução de valores redundantes nas tuplas;
+    \item redução de valores nulos nas tuplas;
+    \item impedimento da geração de tuplas ilegítimas.
+\end{enumerate}
+\end{resposta}
+
+\item O que significa dizer que uma relação deve ter boa semântica dos atributos?
+
+\begin{resposta}
+Significa que os atributos agrupados em uma mesma relação devem fazer sentido juntos no mundo real. Uma tabela deve representar um único conceito principal ou um conjunto coerente de fatos.
+\end{resposta}
+
+\item Por que a redundância é um problema em esquemas relacionais?
+
+\begin{resposta}
+Porque dados repetidos aumentam o espaço ocupado e podem causar inconsistências. Se uma informação aparece em várias tuplas, uma atualização incompleta pode deixar o banco com versões diferentes da mesma informação.
+\end{resposta}
+
+\item Explique o que é uma anomalia de atualização.
+
+\begin{resposta}
+É um problema que ocorre quando uma informação repetida precisa ser alterada em vários lugares. Se a alteração for feita apenas em algumas tuplas, o banco fica inconsistente.
+\end{resposta}
+
+\item Explique o que é uma anomalia de inserção.
+
+\begin{resposta}
+É um problema que ocorre quando não conseguimos inserir uma informação sem inserir outra informação desnecessária. Por exemplo, não conseguir cadastrar uma disciplina enquanto ainda não houver aluno matriculado nela.
+\end{resposta}
+
+\item Explique o que é uma anomalia de remoção.
+
+\begin{resposta}
+É um problema que ocorre quando, ao remover uma tupla, perdemos também uma informação que deveria continuar armazenada. Por exemplo, excluir o último aluno de uma disciplina e, com isso, perder os dados da disciplina.
+\end{resposta}
+
+\item Por que muitos valores \texttt{NULL} podem indicar um problema de projeto?
+
+\begin{resposta}
+Porque muitos valores nulos podem indicar que atributos de conceitos diferentes estão misturados na mesma relação. Isso pode dificultar consultas, restrições e interpretação dos dados.
+\end{resposta}
+
+\item O que é uma dependência funcional?
+
+\begin{resposta}
+Uma dependência funcional é uma restrição entre dois conjuntos de atributos. Dizemos que $X \rightarrow Y$ quando os valores de $X$ determinam os valores de $Y$. Ou seja, se duas tuplas têm o mesmo valor em $X$, então devem ter o mesmo valor em $Y$.
+\end{resposta}
+
+\item Interprete a dependência funcional:
+\[
+\text{matricula} \rightarrow \text{nomeAluno}
+\]
+
+\begin{resposta}
+Significa que a matrícula determina o nome do aluno. Se duas tuplas possuem a mesma matrícula, elas devem possuir o mesmo nome de aluno.
+\end{resposta}
+
+\end{enumerate}
+
+\section{Questões de Aplicação}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Considere a relação:
+\[
+Aluno(\text{matricula}, \text{nome}, \text{curso}, \text{coordenador})
+\]
+
+Suponha que cada matrícula identifica um aluno e cada curso possui um único coordenador. Indique dependências funcionais possíveis.
+
+\begin{resposta}
+Algumas dependências funcionais possíveis são:
+\[
+\text{matricula} \rightarrow \text{nome}
+\]
+\[
+\text{matricula} \rightarrow \text{curso}
+\]
+\[
+\text{curso} \rightarrow \text{coordenador}
+\]
+
+Como a matrícula identifica o aluno, ela determina o nome e o curso. Como cada curso possui um único coordenador, o curso determina o coordenador.
+\end{resposta}
+
+\item Na relação da questão anterior, existe redundância? Justifique.
+
+\begin{resposta}
+Sim. O coordenador do curso pode aparecer repetido para vários alunos do mesmo curso. Se o coordenador mudar, será necessário atualizar várias tuplas, o que pode gerar anomalia de atualização.
+\end{resposta}
+
+\item A relação
+\[
+Aluno(\text{matricula}, \text{nome}, \text{curso}, \text{coordenador})
+\]
+poderia ser decomposta em quais relações para reduzir redundância?
+
+\begin{resposta}
+Uma decomposição possível é:
+\[
+Aluno(\text{matricula}, \text{nome}, \text{curso})
+\]
+\[
+Curso(\text{curso}, \text{coordenador})
+\]
+
+Assim, os dados do curso ficam separados dos dados do aluno.
+\end{resposta}
+
+\item Considere:
+\[
+Pedido(\text{idPedido}, \text{idCliente}, \text{nomeCliente}, \text{dataPedido})
+\]
+
+Sabendo que cada cliente possui um único nome, indique uma possível dependência funcional problemática.
+
+\begin{resposta}
+A dependência problemática é:
+\[
+\text{idCliente} \rightarrow \text{nomeCliente}
+\]
+
+Se o nome do cliente fica armazenado em todos os pedidos, haverá redundância.
+\end{resposta}
+
+\item Por que a relação da questão anterior pode gerar anomalia de atualização?
+
+\begin{resposta}
+Porque o nome do cliente pode aparecer repetido em vários pedidos. Se o nome for corrigido ou alterado, será necessário atualizar todos os pedidos daquele cliente.
+\end{resposta}
+
+\item Considere a relação:
+\[
+Matricula(\text{aluno}, \text{disciplina}, \text{professor}, \text{sala})
+\]
+
+Suponha que:
+\[
+(\text{aluno}, \text{disciplina}) \rightarrow \text{professor}
+\]
+\[
+\text{disciplina} \rightarrow \text{sala}
+\]
+
+Qual atributo depende apenas de parte de uma chave composta?
+
+\begin{resposta}
+Se a chave da relação for $(aluno, disciplina)$, então \texttt{sala} depende apenas de \texttt{disciplina}. Logo, existe uma dependência parcial:
+\[
+\text{disciplina} \rightarrow \text{sala}
+\]
+Isso viola a ideia da Segunda Forma Normal.
+\end{resposta}
+
+\item Explique por que a dependência
+\[
+\text{disciplina} \rightarrow \text{sala}
+\]
+pode causar redundância.
+
+\begin{resposta}
+Porque a sala da disciplina será repetida para todos os alunos matriculados naquela disciplina. Se a sala mudar, várias tuplas precisarão ser atualizadas.
+\end{resposta}
+
+\item Considere a relação:
+\[
+Funcionario(\text{cpf}, \text{nome}, \text{idDepto}, \text{nomeDepto})
+\]
+
+Com as dependências:
+\[
+\text{cpf} \rightarrow \text{nome}, \text{idDepto}
+\]
+\[
+\text{idDepto} \rightarrow \text{nomeDepto}
+\]
+
+Existe dependência transitiva? Explique.
+
+\begin{resposta}
+Sim. Como:
+\[
+\text{cpf} \rightarrow \text{idDepto}
+\]
+e
+\[
+\text{idDepto} \rightarrow \text{nomeDepto}
+\]
+então:
+\[
+\text{cpf} \rightarrow \text{nomeDepto}
+\]
+
+Nesse caso, \texttt{nomeDepto} depende de \texttt{cpf} de forma transitiva, passando por \texttt{idDepto}.
+\end{resposta}
+
+\item A relação da questão anterior está adequada à Terceira Forma Normal? Justifique.
+
+\begin{resposta}
+Não. Há dependência transitiva de um atributo não-chave em relação à chave. O nome do departamento deveria ficar em uma relação separada, como:
+\[
+Funcionario(\text{cpf}, \text{nome}, \text{idDepto})
+\]
+\[
+Departamento(\text{idDepto}, \text{nomeDepto})
+\]
+\end{resposta}
+
+\item Explique, com suas palavras, a diferença entre dependência parcial e dependência transitiva.
+
+\begin{resposta}
+A dependência parcial ocorre quando um atributo depende apenas de parte de uma chave composta. A dependência transitiva ocorre quando um atributo depende da chave por meio de outro atributo não-chave.
+\end{resposta}
+
+\end{enumerate}
+
+\section{Questões sobre Formas Normais}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item O que é a Primeira Forma Normal?
+
+\begin{resposta}
+Uma relação está na Primeira Forma Normal quando seus atributos possuem valores atômicos, ou seja, não há grupos repetidos ou atributos multivalorados dentro de uma mesma célula.
+\end{resposta}
+
+\item A relação abaixo viola a Primeira Forma Normal?
+\[
+Aluno(\text{matricula}, \text{nome}, \text{telefones})
+\]
+
+Exemplo de tupla:
+\[
+(123, \text{Iury}, \{9999-1111, 9888-2222\})
+\]
+
+\begin{resposta}
+Sim. O atributo \texttt{telefones} possui múltiplos valores dentro da mesma célula. Para ficar em 1FN, os telefones deveriam ser separados, por exemplo:
+\[
+Aluno(\text{matricula}, \text{nome})
+\]
+\[
+TelefoneAluno(\text{matricula}, \text{telefone})
+\]
+\end{resposta}
+
+\item O que é a Segunda Forma Normal?
+
+\begin{resposta}
+Uma relação está na Segunda Forma Normal quando está na Primeira Forma Normal e não possui dependências parciais de atributos não-chave em relação a uma chave composta.
+\end{resposta}
+
+\item Uma relação com chave primária simples pode violar a Segunda Forma Normal por dependência parcial?
+
+\begin{resposta}
+Não. Dependência parcial só faz sentido quando a chave é composta. Se a chave possui apenas um atributo, não há ``parte'' da chave.
+\end{resposta}
+
+\item O que é a Terceira Forma Normal?
+
+\begin{resposta}
+Uma relação está na Terceira Forma Normal quando está na Segunda Forma Normal e não possui dependências transitivas de atributos não-chave em relação à chave.
+\end{resposta}
+
+\item O que é a Forma Normal de Boyce-Codd?
+
+\begin{resposta}
+A Forma Normal de Boyce-Codd, ou BCNF, é uma forma normal mais rigorosa que a 3FN. Em geral, uma relação está em BCNF quando, para toda dependência funcional não trivial $X \rightarrow Y$, o conjunto $X$ é uma superchave.
+\end{resposta}
+
+\item Toda relação em BCNF está em 3FN? E toda relação em 3FN está em BCNF?
+
+\begin{resposta}
+Toda relação em BCNF está em 3FN, pois BCNF é mais restritiva. Porém, nem toda relação em 3FN está em BCNF.
+\end{resposta}
+
+\item Considere:
+\[
+R(A, B, C)
+\]
+com dependências:
+\[
+A \rightarrow B
+\]
+\[
+B \rightarrow C
+\]
+
+Se $A$ é chave, há violação de 3FN? Justifique.
+
+\begin{resposta}
+Sim, pode haver violação de 3FN por dependência transitiva. Como:
+\[
+A \rightarrow B
+\]
+e
+\[
+B \rightarrow C
+\]
+então:
+\[
+A \rightarrow C
+\]
+por meio de $B$. Se $B$ não é chave e $C$ é não-chave, temos dependência transitiva.
+\end{resposta}
+
+\item Considere:
+\[
+R(A, B, C)
+\]
+com dependências:
+\[
+A \rightarrow B
+\]
+\[
+B \rightarrow A
+\]
+\[
+B \rightarrow C
+\]
+
+Quais poderiam ser chaves candidatas?
+
+\begin{resposta}
+Como $A \rightarrow B$ e $B \rightarrow A$, $A$ e $B$ determinam um ao outro. Além disso, $B \rightarrow C$. Portanto, $B$ determina $A$ e $C$, então $B$ é chave candidata.
+
+Como $A \rightarrow B$ e $B \rightarrow C$, então $A \rightarrow C$. Logo, $A$ também determina $B$ e $C$. Portanto, $A$ também é chave candidata.
+\end{resposta}
+
+\item Por que a normalização não deve ser vista apenas como uma regra mecânica?
+
+\begin{resposta}
+Porque a normalização depende do significado dos dados no minimundo. As dependências funcionais não surgem apenas olhando os nomes dos atributos; elas dependem das regras reais do domínio modelado.
+\end{resposta}
+
+\end{enumerate}
+
+\section{Questões sobre Cobertura Mínima}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item O que é uma cobertura mínima de dependências funcionais?
+
+\begin{resposta}
+É um conjunto equivalente de dependências funcionais, mas sem redundâncias. Em uma cobertura mínima, normalmente cada dependência tem apenas um atributo no lado direito, não há atributos redundantes no lado esquerdo e não há dependências funcionais desnecessárias.
+\end{resposta}
+
+\item Qual é o primeiro passo comum para calcular uma cobertura mínima?
+
+\begin{resposta}
+Separar dependências com vários atributos no lado direito. Por exemplo:
+\[
+A \rightarrow BC
+\]
+deve ser substituída por:
+\[
+A \rightarrow B
+\]
+\[
+A \rightarrow C
+\]
+\end{resposta}
+
+\item Considere:
+\[
+F = \{A \rightarrow BC, B \rightarrow D\}
+\]
+
+Reescreva $F$ colocando apenas um atributo no lado direito de cada dependência.
+
+\begin{resposta}
+O conjunto fica:
+\[
+F = \{A \rightarrow B,\ A \rightarrow C,\ B \rightarrow D\}
+\]
+\end{resposta}
+
+\item Considere:
+\[
+F = \{AB \rightarrow C,\ A \rightarrow C\}
+\]
+
+O atributo $B$ é redundante em $AB \rightarrow C$? Justifique.
+
+\begin{resposta}
+Sim. Como já existe $A \rightarrow C$, não precisamos de $B$ para determinar $C$. Logo, $AB \rightarrow C$ pode ser simplificada para $A \rightarrow C$.
+\end{resposta}
+
+\item Considere:
+\[
+F = \{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow C\}
+\]
+
+A dependência $A \rightarrow C$ é redundante? Justifique.
+
+\begin{resposta}
+Sim. Como $A \rightarrow B$ e $B \rightarrow C$, podemos inferir $A \rightarrow C$ por transitividade. Logo, $A \rightarrow C$ pode ser removida sem alterar o fechamento do conjunto.
+\end{resposta}
+
+\end{enumerate}
+
+\section{Questões Estilo Prova}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Considere a relação:
+\[
+Venda(\text{idVenda}, \text{idProduto}, \text{nomeProduto}, \text{idCliente}, \text{nomeCliente}, \text{dataVenda})
+\]
+
+Suponha:
+\[
+\text{idVenda} \rightarrow \text{idProduto}, \text{idCliente}, \text{dataVenda}
+\]
+\[
+\text{idProduto} \rightarrow \text{nomeProduto}
+\]
+\[
+\text{idCliente} \rightarrow \text{nomeCliente}
+\]
+
+Identifique problemas de projeto nessa relação e proponha uma decomposição.
+
+\begin{resposta}
+A relação mistura informações da venda, do produto e do cliente. Há redundância em \texttt{nomeProduto} e \texttt{nomeCliente}, pois esses dados podem se repetir em várias vendas.
+
+Uma decomposição possível é:
+\[
+Venda(\text{idVenda}, \text{idProduto}, \text{idCliente}, \text{dataVenda})
+\]
+\[
+Produto(\text{idProduto}, \text{nomeProduto})
+\]
+\[
+Cliente(\text{idCliente}, \text{nomeCliente})
+\]
+
+Assim, cada relação representa um conceito mais claro.
+\end{resposta}
+
+\item Considere:
+\[
+R(A, B, C, D)
+\]
+com as dependências:
+\[
+A \rightarrow B
+\]
+\[
+B \rightarrow C
+\]
+\[
+C \rightarrow D
+\]
+
+Determine o fechamento de $A$, isto é, $A^+$.
+
+\begin{resposta}
+Começamos com:
+\[
+A^+ = \{A\}
+\]
+
+Como $A \rightarrow B$:
+\[
+A^+ = \{A, B\}
+\]
+
+Como agora temos $B$ e $B \rightarrow C$:
+\[
+A^+ = \{A, B, C\}
+\]
+
+Como agora temos $C$ e $C \rightarrow D$:
+\[
+A^+ = \{A, B, C, D\}
+\]
+
+Logo:
+\[
+A^+ = \{A, B, C, D\}
+\]
+
+Portanto, $A$ é chave para $R$.
+\end{resposta}
+
+\item Considere:
+\[
+R(A, B, C, D)
+\]
+com:
+\[
+AB \rightarrow C
+\]
+\[
+C \rightarrow D
+\]
+
+Calcule $(AB)^+$.
+
+\begin{resposta}
+Começamos com:
+\[
+(AB)^+ = \{A, B\}
+\]
+
+Como $AB \rightarrow C$:
+\[
+(AB)^+ = \{A, B, C\}
+\]
+
+Como $C \rightarrow D$:
+\[
+(AB)^+ = \{A, B, C, D\}
+\]
+
+Logo:
+\[
+(AB)^+ = \{A, B, C, D\}
+\]
+
+Portanto, $AB$ é chave para $R$.
+\end{resposta}
+
+\item Considere:
+\[
+R(A, B, C)
+\]
+com:
+\[
+A \rightarrow B
+\]
+\[
+B \rightarrow A
+\]
+\[
+B \rightarrow C
+\]
+
+A relação está em BCNF? Justifique.
+
+\begin{resposta}
+Para verificar BCNF, analisamos se o lado esquerdo de cada dependência funcional é superchave.
+
+Como $B \rightarrow A$ e $B \rightarrow C$, então:
+\[
+B^+ = \{A, B, C\}
+\]
+Logo, $B$ é superchave.
+
+Como $A \rightarrow B$ e $B \rightarrow C$, então:
+\[
+A^+ = \{A, B, C\}
+\]
+Logo, $A$ também é superchave.
+
+Como o lado esquerdo das dependências relevantes é superchave, a relação está em BCNF.
+\end{resposta}
+
+\item Considere:
+\[
+R(A, B, C)
+\]
+com:
+\[
+A \rightarrow B
+\]
+\[
+B \rightarrow C
+\]
+
+Sabendo que $A$ é chave, proponha uma decomposição para reduzir dependência transitiva.
+
+\begin{resposta}
+Como $A \rightarrow B$ e $B \rightarrow C$, temos uma dependência transitiva:
+\[
+A \rightarrow C
+\]
+por meio de $B$.
+
+Uma decomposição possível é:
+\[
+R_1(A, B)
+\]
+\[
+R_2(B, C)
+\]
+
+Assim, a dependência $B \rightarrow C$ fica em uma relação própria.
+\end{resposta}
+
+\end{enumerate}
+
+\section*{Resumo para Revisão Rápida}
+
+\begin{itemize}
+    \item Dependência funcional: $X \rightarrow Y$ significa que $X$ determina $Y$.
+    \item Redundância pode gerar anomalias de inserção, atualização e remoção.
+    \item 1FN elimina atributos multivalorados ou não atômicos.
+    \item 2FN elimina dependências parciais em relação a chaves compostas.
+    \item 3FN elimina dependências transitivas de atributos não-chave.
+    \item BCNF exige que, em toda DF não trivial $X \rightarrow Y$, $X$ seja superchave.
+    \item Cobertura mínima remove redundâncias do conjunto de dependências funcionais.
+\end{itemize}
+
+\end{document}

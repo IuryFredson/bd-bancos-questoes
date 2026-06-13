@@ -1,0 +1,1125 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{multicol}
+
+\geometry{margin=2.3cm}
+
+\title{Banco de Questões Objetivas -- Aula 12\\Processamento de Transações}
+\author{Banco de Dados}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Instruções}
+
+Este banco contém questões objetivas sobre os principais tópicos da Aula 12:
+\begin{itemize}
+    \item conceito de transação;
+    \item sistemas de processamento de transações;
+    \item operações de leitura e escrita;
+    \item estados de uma transação;
+    \item propriedades ACID;
+    \item planos de execução;
+    \item restaurabilidade;
+    \item seriabilidade;
+    \item equivalência de planos;
+    \item conflitos entre operações;
+    \item suporte a transações em SQL;
+    \item comandos \texttt{COMMIT}, \texttt{ROLLBACK} e \texttt{START TRANSACTION}.
+\end{itemize}
+
+\section{Questões de Múltipla Escolha}
+
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+
+\item Uma transação em banco de dados pode ser definida como:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma unidade lógica de processamento de banco de dados.
+    \item uma tabela temporária sem chave primária.
+    \item um comando usado apenas para criar tabelas.
+    \item um índice físico do banco.
+\end{enumerate}
+
+\item Uma transação pode incluir operações de:
+
+\begin{enumerate}[label=\alph*)]
+    \item leitura, escrita, inserção, atualização e remoção.
+    \item apenas criação de tabelas.
+    \item apenas ordenação de resultados.
+    \item apenas definição de usuários.
+\end{enumerate}
+
+\item Sistemas de processamento de transações são comuns em aplicações como:
+
+\begin{enumerate}[label=\alph*)]
+    \item bancos, reservas de passagens, cartões de crédito e compras online.
+    \item apenas editores de texto locais.
+    \item apenas calculadoras sem armazenamento.
+    \item apenas arquivos estáticos sem usuários.
+\end{enumerate}
+
+\item Uma característica desejada em sistemas de processamento de transações é:
+
+\begin{enumerate}[label=\alph*)]
+    \item alta disponibilidade.
+    \item ausência de usuários concorrentes.
+    \item impossibilidade de recuperação.
+    \item bloqueio permanente do banco.
+\end{enumerate}
+
+\item Outra característica desejada nesses sistemas é:
+
+\begin{enumerate}[label=\alph*)]
+    \item baixo tempo de resposta.
+    \item execução exclusivamente manual.
+    \item ausência de atualizações.
+    \item impossibilidade de acesso simultâneo.
+\end{enumerate}
+
+\item Em um ambiente com muitos usuários, o SGBD precisa lidar com:
+
+\begin{enumerate}[label=\alph*)]
+    \item usuários concorrentes executando transações simultaneamente.
+    \item apenas um usuário por semana.
+    \item somente comandos de criação de esquema.
+    \item ausência total de falhas.
+\end{enumerate}
+
+\item As propriedades desejáveis de transações são conhecidas pela sigla:
+
+\begin{enumerate}[label=\alph*)]
+    \item ACID.
+    \item SQL.
+    \item DDL.
+    \item RAID.
+\end{enumerate}
+
+\item A propriedade de atomicidade significa que:
+
+\begin{enumerate}[label=\alph*)]
+    \item a transação deve ser executada completamente ou não produzir efeito algum.
+    \item a transação sempre executa apenas uma operação.
+    \item a transação nunca pode ser desfeita.
+    \item a transação dispensa controle de concorrência.
+\end{enumerate}
+
+\item A propriedade de consistência significa que:
+
+\begin{enumerate}[label=\alph*)]
+    \item a transação deve levar o banco de um estado consistente para outro estado consistente.
+    \item a transação deve ignorar todas as restrições.
+    \item a transação deve gerar valores duplicados obrigatoriamente.
+    \item a transação não pode alterar dados.
+\end{enumerate}
+
+\item A propriedade de isolamento significa que:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma transação deve executar como se estivesse isolada das demais.
+    \item uma transação nunca pode ocorrer ao mesmo tempo que outra.
+    \item uma transação deve sempre visualizar dados não confirmados.
+    \item uma transação deve eliminar todas as outras.
+\end{enumerate}
+
+\item A propriedade de durabilidade significa que:
+
+\begin{enumerate}[label=\alph*)]
+    \item depois de efetivada, a transação deve permanecer no banco mesmo diante de falhas.
+    \item a transação deve durar muito tempo em execução.
+    \item a transação deve ser apagada após o \texttt{COMMIT}.
+    \item a transação só existe enquanto o usuário está conectado.
+\end{enumerate}
+
+\item O comando \texttt{COMMIT} é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item efetivar as alterações de uma transação.
+    \item desfazer as alterações de uma transação.
+    \item criar uma tabela.
+    \item remover uma coluna.
+\end{enumerate}
+
+\item O comando \texttt{ROLLBACK} é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item desfazer as alterações de uma transação não efetivada.
+    \item confirmar permanentemente uma transação.
+    \item criar um índice.
+    \item definir uma chave estrangeira.
+\end{enumerate}
+
+\item O comando \texttt{START TRANSACTION} ou \texttt{BEGIN} é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item iniciar explicitamente uma transação.
+    \item finalizar uma consulta.
+    \item criar uma visão.
+    \item remover uma tabela.
+\end{enumerate}
+
+\item Uma transação que terminou com sucesso normalmente chega ao estado:
+
+\begin{enumerate}[label=\alph*)]
+    \item efetivada.
+    \item abortada.
+    \item bloqueada permanentemente.
+    \item inexistente.
+\end{enumerate}
+
+\item Uma transação que falha e tem seus efeitos desfeitos chega ao estado:
+
+\begin{enumerate}[label=\alph*)]
+    \item abortada.
+    \item efetivada.
+    \item parcialmente efetivada para sempre.
+    \item serializável.
+\end{enumerate}
+
+\item O estado ativo de uma transação ocorre quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item a transação está em execução.
+    \item a transação já foi apagada do log.
+    \item a transação ainda não começou e nunca começará.
+    \item a transação foi substituída por uma tabela.
+\end{enumerate}
+
+\item Uma transação parcialmente efetivada é aquela que:
+
+\begin{enumerate}[label=\alph*)]
+    \item executou sua última operação, mas ainda pode precisar garantir persistência.
+    \item ainda não executou nenhuma operação.
+    \item foi obrigatoriamente desfeita.
+    \item não possui operações de escrita.
+\end{enumerate}
+
+\item O modelo simples de transação normalmente considera operações como:
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{read\_item} e \texttt{write\_item}.
+    \item \texttt{create\_index} e \texttt{drop\_schema} apenas.
+    \item \texttt{group\_by} e \texttt{order\_by} apenas.
+    \item \texttt{grant} e \texttt{revoke} apenas.
+\end{enumerate}
+
+\item A operação de leitura de um item de dado consiste em:
+
+\begin{enumerate}[label=\alph*)]
+    \item copiar o valor do banco para uma variável da transação.
+    \item remover o item do banco.
+    \item confirmar uma transação.
+    \item criar uma nova tabela.
+\end{enumerate}
+
+\item A operação de escrita de um item de dado consiste em:
+
+\begin{enumerate}[label=\alph*)]
+    \item gravar no banco um valor produzido pela transação.
+    \item apenas consultar o catálogo do banco.
+    \item iniciar uma conexão.
+    \item ordenar o resultado de uma consulta.
+\end{enumerate}
+
+\item Um plano de execução, ou escalonamento, representa:
+
+\begin{enumerate}[label=\alph*)]
+    \item a ordem em que operações de transações são executadas.
+    \item a estrutura física de uma tabela.
+    \item o conjunto de domínios de atributos.
+    \item o nome do banco de dados.
+\end{enumerate}
+
+\item Um plano serial é aquele em que:
+
+\begin{enumerate}[label=\alph*)]
+    \item todas as operações de cada transação aparecem consecutivamente, sem intercalação.
+    \item todas as transações executam ao mesmo tempo operação por operação.
+    \item toda operação é obrigatoriamente abortada.
+    \item não existem comandos de leitura.
+\end{enumerate}
+
+\item Em um plano não serial:
+
+\begin{enumerate}[label=\alph*)]
+    \item operações de transações diferentes podem estar intercaladas.
+    \item só existe uma transação.
+    \item nenhuma transação pode escrever.
+    \item todas as transações são apagadas.
+\end{enumerate}
+
+\item Ser serializável significa que:
+
+\begin{enumerate}[label=\alph*)]
+    \item o plano é equivalente a algum plano serial das mesmas transações.
+    \item o plano precisa ser literalmente serial.
+    \item o plano não pode ter operações de leitura.
+    \item o plano sempre viola consistência.
+\end{enumerate}
+
+\item Ser serializável é diferente de ser serial porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item um plano pode ter intercalação e ainda assim ser equivalente a um plano serial.
+    \item todo plano serializável não possui transações.
+    \item plano serializável sempre aborta.
+    \item plano serial nunca é correto.
+\end{enumerate}
+
+\item Um plano serializável é considerado correto porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item produz efeito equivalente a uma execução serial correta.
+    \item elimina todas as transações.
+    \item impede qualquer concorrência.
+    \item transforma todas as operações em leituras.
+\end{enumerate}
+
+\item A principal vantagem de permitir planos serializáveis não seriais é:
+
+\begin{enumerate}[label=\alph*)]
+    \item permitir concorrência mantendo a correção.
+    \item impedir acesso simultâneo.
+    \item remover a necessidade de \texttt{COMMIT}.
+    \item impedir uso de \texttt{ROLLBACK}.
+\end{enumerate}
+
+\item A serializabilidade é importante porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item ajuda a definir quando uma execução concorrente é correta.
+    \item substitui todas as restrições de integridade.
+    \item elimina a necessidade de banco relacional.
+    \item só serve para comandos DDL.
+\end{enumerate}
+
+\item A verificação prática da serializabilidade é difícil porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item as operações intercaladas dependem do agendamento do sistema.
+    \item SQL não possui comandos de consulta.
+    \item não existem transações concorrentes.
+    \item todos os planos são sempre seriais.
+\end{enumerate}
+
+\item Duas operações entram em conflito quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item pertencem a transações diferentes, acessam o mesmo item e pelo menos uma delas é escrita.
+    \item pertencem à mesma transação e acessam itens diferentes.
+    \item são apenas duas leituras do mesmo item.
+    \item são comandos de criação de tabela.
+\end{enumerate}
+
+\item Qual par de operações sobre o mesmo item gera conflito?
+
+\begin{enumerate}[label=\alph*)]
+    \item leitura e escrita.
+    \item leitura e leitura.
+    \item duas leituras.
+    \item duas consultas sem item comum.
+\end{enumerate}
+
+\item Qual par de operações sobre o mesmo item também gera conflito?
+
+\begin{enumerate}[label=\alph*)]
+    \item escrita e escrita.
+    \item leitura e leitura.
+    \item duas operações em itens diferentes.
+    \item duas operações da mesma transação apenas.
+\end{enumerate}
+
+\item Duas operações de leitura sobre o mesmo item:
+
+\begin{enumerate}[label=\alph*)]
+    \item não geram conflito.
+    \item sempre geram conflito.
+    \item sempre causam \texttt{ROLLBACK}.
+    \item eliminam a transação.
+\end{enumerate}
+
+\item A equivalência por conflito considera:
+
+\begin{enumerate}[label=\alph*)]
+    \item a ordem relativa das operações conflitantes.
+    \item apenas o nome das tabelas.
+    \item apenas a quantidade de usuários conectados.
+    \item apenas comandos de criação de índice.
+\end{enumerate}
+
+\item Um plano é serializável por conflito quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item é equivalente por conflito a algum plano serial.
+    \item não possui nenhuma operação.
+    \item só possui comandos \texttt{CREATE TABLE}.
+    \item todas as transações foram abortadas.
+\end{enumerate}
+
+\item A equivalência de visão é geralmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma forma de equivalência mais geral que a equivalência por conflito.
+    \item idêntica à ordenação alfabética de comandos SQL.
+    \item uma técnica para criar visões SQL.
+    \item uma restrição \texttt{NOT NULL}.
+\end{enumerate}
+
+\item Um plano restaurável é aquele em que:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma transação só confirma depois das transações das quais leu valores também confirmarem.
+    \item toda transação confirma antes de ler.
+    \item transações nunca leem dados.
+    \item todas as transações são sempre seriais.
+\end{enumerate}
+
+\item Um problema de um plano não restaurável é:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma transação confirmar baseada em valor produzido por outra que depois aborta.
+    \item ele nunca possuir concorrência.
+    \item ele sempre ser serial.
+    \item ele impedir qualquer leitura.
+\end{enumerate}
+
+\item Leitura suja ocorre quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma transação lê valor escrito por outra transação ainda não confirmada.
+    \item uma transação lê um valor já confirmado.
+    \item uma transação apenas consulta o catálogo.
+    \item uma transação executa \texttt{COMMIT}.
+\end{enumerate}
+
+\item Uma reversão em cascata pode ocorrer quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma transação abortada força o aborto de outras que leram seus dados não confirmados.
+    \item todas as transações são independentes.
+    \item nenhuma transação leu dados de outra.
+    \item todos os planos são seriais.
+\end{enumerate}
+
+\item Um plano sem cascata evita:
+
+\begin{enumerate}[label=\alph*)]
+    \item que transações leiam valores escritos por transações ainda não confirmadas.
+    \item que transações façam leitura de dados confirmados.
+    \item que transações usem \texttt{COMMIT}.
+    \item que o banco tenha chaves primárias.
+\end{enumerate}
+
+\item Um plano estrito é importante porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item facilita recuperação, evitando leitura ou escrita sobre itens escritos por transações não confirmadas.
+    \item obriga todas as transações a serem removidas.
+    \item elimina a necessidade de log em qualquer sistema.
+    \item impede qualquer uso de SQL.
+\end{enumerate}
+
+\item A restaurabilidade está mais ligada à propriedade de:
+
+\begin{enumerate}[label=\alph*)]
+    \item recuperação correta após falhas ou abortos.
+    \item definição de esquemas.
+    \item criação de visões.
+    \item normalização até BCNF.
+\end{enumerate}
+
+\item A seriabilidade está mais ligada à propriedade de:
+
+\begin{enumerate}[label=\alph*)]
+    \item isolamento.
+    \item atomicidade apenas.
+    \item criação de tabelas.
+    \item criptografia de senha.
+\end{enumerate}
+
+\item A durabilidade está mais diretamente ligada ao uso de mecanismos como:
+
+\begin{enumerate}[label=\alph*)]
+    \item armazenamento persistente e recuperação.
+    \item apenas ordenação de consultas.
+    \item apenas chaves estrangeiras.
+    \item apenas \texttt{SELECT DISTINCT}.
+\end{enumerate}
+
+\item A atomicidade está mais diretamente ligada ao uso de:
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{COMMIT} e \texttt{ROLLBACK}.
+    \item \texttt{GROUP BY} e \texttt{HAVING}.
+    \item \texttt{CREATE VIEW} e \texttt{DROP VIEW}.
+    \item \texttt{ORDER BY} e \texttt{DISTINCT}.
+\end{enumerate}
+
+\item Uma execução concorrente pode melhorar:
+
+\begin{enumerate}[label=\alph*)]
+    \item desempenho e utilização dos recursos do sistema.
+    \item inconsistência obrigatória do banco.
+    \item impossibilidade de recuperação.
+    \item ausência de usuários simultâneos.
+\end{enumerate}
+
+\item O risco da execução concorrente sem controle é:
+
+\begin{enumerate}[label=\alph*)]
+    \item produzir resultados incorretos ou inconsistentes.
+    \item tornar toda consulta serializável automaticamente.
+    \item impedir qualquer conflito.
+    \item eliminar necessidade de transações.
+\end{enumerate}
+
+\item Em SQL, quando o modo \texttt{autocommit} está ativado:
+
+\begin{enumerate}[label=\alph*)]
+    \item cada comando pode ser tratado como uma transação automaticamente confirmada.
+    \item nenhuma transação pode ser efetivada.
+    \item todo comando vira \texttt{ROLLBACK}.
+    \item o banco deixa de aceitar \texttt{SELECT}.
+\end{enumerate}
+
+\item Para controlar manualmente uma transação em SQL, é comum usar:
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{START TRANSACTION}, seguido de comandos, e depois \texttt{COMMIT} ou \texttt{ROLLBACK}.
+    \item apenas \texttt{SELECT DISTINCT}.
+    \item apenas \texttt{CREATE TABLE}.
+    \item apenas \texttt{ORDER BY}.
+\end{enumerate}
+
+\item Em JDBC, o controle de transações pode envolver:
+
+\begin{enumerate}[label=\alph*)]
+    \item desativar \texttt{autoCommit}, executar comandos e chamar \texttt{commit} ou \texttt{rollback}.
+    \item usar apenas \texttt{GROUP BY}.
+    \item criar uma tabela para cada transação.
+    \item remover o driver JDBC.
+\end{enumerate}
+
+\item Se uma aplicação executa duas atualizações que devem ocorrer juntas, o ideal é:
+
+\begin{enumerate}[label=\alph*)]
+    \item colocá-las na mesma transação.
+    \item executar uma e ignorar a outra.
+    \item usar \texttt{DROP TABLE}.
+    \item armazenar tudo em uma única string.
+\end{enumerate}
+
+\item Em uma transferência bancária, debitar uma conta e creditar outra deve ser uma transação por causa da:
+
+\begin{enumerate}[label=\alph*)]
+    \item atomicidade.
+    \item ausência de chaves.
+    \item eliminação de \texttt{WHERE}.
+    \item criação de índices.
+\end{enumerate}
+
+\item Se o banco confirma uma transação, mas perde seus dados após queda de energia, a propriedade violada é:
+
+\begin{enumerate}[label=\alph*)]
+    \item durabilidade.
+    \item isolamento.
+    \item 1FN.
+    \item chave estrangeira.
+\end{enumerate}
+
+\item Se uma transação lê dados temporários de outra ainda não confirmada, o problema está relacionado a:
+
+\begin{enumerate}[label=\alph*)]
+    \item isolamento e leitura suja.
+    \item normalização.
+    \item criação de esquema.
+    \item \texttt{ORDER BY}.
+\end{enumerate}
+
+\item Se uma transação deixa o banco violando uma restrição de integridade, o problema está relacionado à:
+
+\begin{enumerate}[label=\alph*)]
+    \item consistência.
+    \item durabilidade apenas.
+    \item criação de visão.
+    \item consulta aninhada.
+\end{enumerate}
+
+\item O estudo de planos baseados em restaurabilidade busca responder:
+
+\begin{enumerate}[label=\alph*)]
+    \item se o plano permite recuperação correta diante de abortos ou falhas.
+    \item se uma tabela está em BCNF.
+    \item se uma consulta possui \texttt{GROUP BY}.
+    \item se uma chave é composta.
+\end{enumerate}
+
+\item O estudo de planos baseados em seriabilidade busca responder:
+
+\begin{enumerate}[label=\alph*)]
+    \item se uma intercalação concorrente equivale a alguma execução serial.
+    \item se uma senha está criptografada.
+    \item se uma tabela possui valores nulos.
+    \item se um índice é B-tree.
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Questões de Verdadeiro ou Falso}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Uma transação é uma unidade lógica de processamento de BD.
+    \item ( \quad ) Uma transação pode envolver leitura e escrita.
+    \item ( \quad ) Uma aplicação pode conter várias transações.
+    \item ( \quad ) Transações são usadas apenas para criar tabelas.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Sistemas de transações devem lidar com usuários concorrentes.
+    \item ( \quad ) Alta disponibilidade é desejável em sistemas de transações.
+    \item ( \quad ) Baixo tempo de resposta é desejável em sistemas de transações.
+    \item ( \quad ) Sistemas de transações não aparecem em bancos ou compras online.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Atomicidade significa tudo ou nada.
+    \item ( \quad ) Consistência significa preservar regras do banco.
+    \item ( \quad ) Isolamento trata da interferência entre transações.
+    \item ( \quad ) Durabilidade significa que a transação confirmada pode ser perdida livremente.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) \texttt{COMMIT} efetiva alterações.
+    \item ( \quad ) \texttt{ROLLBACK} desfaz alterações não confirmadas.
+    \item ( \quad ) \texttt{START TRANSACTION} pode iniciar uma transação.
+    \item ( \quad ) \texttt{COMMIT} e \texttt{ROLLBACK} possuem exatamente o mesmo efeito.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Um plano serial executa as operações de cada transação consecutivamente.
+    \item ( \quad ) Um plano não serial pode intercalar operações de transações.
+    \item ( \quad ) Um plano serializável deve ser equivalente a algum plano serial.
+    \item ( \quad ) Todo plano serializável precisa ser literalmente serial.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Ser serializável é diferente de ser serial.
+    \item ( \quad ) Um plano serializável é considerado correto.
+    \item ( \quad ) A intercalação pode ser apropriada e ainda assim gerar resultado correto.
+    \item ( \quad ) A serializabilidade sempre impede concorrência.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Duas leituras sobre o mesmo item não geram conflito.
+    \item ( \quad ) Leitura e escrita sobre o mesmo item podem gerar conflito.
+    \item ( \quad ) Escrita e escrita sobre o mesmo item podem gerar conflito.
+    \item ( \quad ) Operações em itens diferentes sempre geram conflito.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Equivalência por conflito preserva a ordem das operações conflitantes.
+    \item ( \quad ) Um plano serializável por conflito é equivalente por conflito a algum plano serial.
+    \item ( \quad ) Equivalência de visão é uma noção de equivalência entre planos.
+    \item ( \quad ) Equivalência por conflito é usada para criar visões SQL.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Plano restaurável evita que uma transação confirme antes daquelas das quais depende.
+    \item ( \quad ) Leitura suja envolve leitura de valor não confirmado.
+    \item ( \quad ) Reversão em cascata pode ocorrer por leitura de dados não confirmados.
+    \item ( \quad ) Plano sem cascata permite leitura de dados não confirmados livremente.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Plano estrito facilita recuperação.
+    \item ( \quad ) Restaurabilidade está relacionada a recuperação correta.
+    \item ( \quad ) Seriabilidade está relacionada à correção da execução concorrente.
+    \item ( \quad ) Planos não restauráveis são sempre desejáveis.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Concorrência pode melhorar desempenho.
+    \item ( \quad ) Concorrência sem controle pode causar inconsistências.
+    \item ( \quad ) Controle de transações ajuda a preservar propriedades ACID.
+    \item ( \quad ) Concorrência elimina a necessidade de isolamento.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) No modo \texttt{autocommit}, comandos podem ser confirmados automaticamente.
+    \item ( \quad ) Em SQL, \texttt{BEGIN} pode iniciar uma transação.
+    \item ( \quad ) Em JDBC, pode-se usar \texttt{commit} e \texttt{rollback}.
+    \item ( \quad ) Transações não podem ser controladas por aplicações.
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Questões de Aplicação Objetiva}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Considere uma transferência bancária com duas operações: debitar R\$100 da conta A e creditar R\$100 na conta B. Se o débito ocorre, mas o crédito não ocorre, qual propriedade foi violada?
+
+\begin{enumerate}[label=\alph*)]
+    \item Atomicidade.
+    \item Durabilidade.
+    \item Isolamento apenas.
+    \item BCNF.
+\end{enumerate}
+
+\item Uma transação confirmou a compra de uma passagem. Logo depois, o sistema caiu e a compra desapareceu. Qual propriedade foi violada?
+
+\begin{enumerate}[label=\alph*)]
+    \item Durabilidade.
+    \item Atomicidade.
+    \item Isolamento.
+    \item 2FN.
+\end{enumerate}
+
+\item Duas transações executam ao mesmo tempo sobre o mesmo saldo bancário e uma interfere na outra, produzindo resultado incorreto. O problema está mais diretamente ligado à falta de:
+
+\begin{enumerate}[label=\alph*)]
+    \item isolamento.
+    \item chave estrangeira.
+    \item normalização.
+    \item visão SQL.
+\end{enumerate}
+
+\item Uma transação finaliza deixando o banco violando uma regra de integridade. A propriedade afetada é:
+
+\begin{enumerate}[label=\alph*)]
+    \item consistência.
+    \item durabilidade.
+    \item ordenação.
+    \item projeção.
+\end{enumerate}
+
+\item Considere o plano:
+
+\[
+r_1(X),\ w_1(X),\ r_2(X),\ w_2(X)
+\]
+
+As operações $w_1(X)$ e $r_2(X)$:
+
+\begin{enumerate}[label=\alph*)]
+    \item entram em conflito, pois acessam o mesmo item e uma é escrita.
+    \item não entram em conflito, pois são de transações diferentes.
+    \item não entram em conflito, pois leitura e escrita nunca conflitam.
+    \item são comandos DDL.
+\end{enumerate}
+
+\item Considere o plano:
+
+\[
+r_1(X),\ r_2(X)
+\]
+
+Essas operações:
+
+\begin{enumerate}[label=\alph*)]
+    \item não entram em conflito.
+    \item entram em conflito sempre.
+    \item causam \texttt{ROLLBACK} obrigatório.
+    \item violam durabilidade.
+\end{enumerate}
+
+\item Considere duas transações $T_1$ e $T_2$. Um plano executa todas as operações de $T_1$ e depois todas as operações de $T_2$. Esse plano é:
+
+\begin{enumerate}[label=\alph*)]
+    \item serial.
+    \item não restaurável obrigatoriamente.
+    \item não serializável obrigatoriamente.
+    \item uma leitura suja.
+\end{enumerate}
+
+\item Um plano intercala operações de $T_1$ e $T_2$, mas produz o mesmo efeito de executar $T_1$ antes de $T_2$. Esse plano pode ser:
+
+\begin{enumerate}[label=\alph*)]
+    \item serializável.
+    \item necessariamente incorreto.
+    \item necessariamente não restaurável.
+    \item uma operação DDL.
+\end{enumerate}
+
+\item $T_2$ lê um valor escrito por $T_1$. Depois $T_2$ confirma antes de $T_1$. Se $T_1$ abortar, o plano é problemático porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item $T_2$ confirmou baseada em dado não confirmado.
+    \item $T_2$ nunca leu dados.
+    \item $T_1$ e $T_2$ eram a mesma transação.
+    \item não houve nenhuma dependência.
+\end{enumerate}
+
+\item Qual sequência SQL representa melhor uma transação manual?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{START TRANSACTION;} comandos SQL; \texttt{COMMIT;}
+    \item \texttt{GROUP BY;} comandos SQL; \texttt{ORDER BY;}
+    \item \texttt{CREATE TABLE;} \texttt{DROP TABLE;} \texttt{SELECT;}
+    \item \texttt{WHERE;} \texttt{HAVING;} \texttt{DISTINCT;}
+\end{enumerate}
+
+\item Considere o plano:
+\[
+r_1(X),\ w_1(X),\ r_2(X),\ w_2(X)
+\]
+Qual conflito ocorre entre $w_1(X)$ e $r_2(X)$?
+
+\begin{enumerate}[label=\alph*)]
+    \item Não há conflito, pois são transações diferentes.
+    \item Conflito do tipo escrita-leitura no mesmo item.
+    \item Conflito apenas se $X$ for chave primária.
+    \item Conflito de definição de tabela.
+\end{enumerate}
+
+\item Considere o plano:
+\[
+r_1(X),\ r_2(X),\ w_1(X),\ w_2(X)
+\]
+Quais pares de operações sobre $X$ entram em conflito?
+
+\begin{enumerate}[label=\alph*)]
+    \item Apenas $r_1(X)$ e $r_2(X)$.
+    \item $r_1(X)$ com $w_2(X)$, $r_2(X)$ com $w_1(X)$ e $w_1(X)$ com $w_2(X)$.
+    \item Nenhum par, pois todas usam o mesmo item.
+    \item Apenas leituras entram em conflito.
+\end{enumerate}
+
+\item Considere o plano:
+\[
+r_1(X),\ w_1(X),\ r_2(X),\ w_2(X)
+\]
+No grafo de precedência, qual aresta deve existir?
+
+\begin{enumerate}[label=\alph*)]
+    \item $T_2 \rightarrow T_1$ apenas.
+    \item $T_1 \rightarrow T_2$.
+    \item Nenhuma, pois o plano é serial.
+    \item $X \rightarrow T_1$.
+\end{enumerate}
+
+\item Considere o plano:
+\[
+r_1(X),\ w_2(X),\ w_1(X)
+\]
+Qual relação de precedência é gerada pelos conflitos?
+
+\begin{enumerate}[label=\alph*)]
+    \item Apenas $T_1 \rightarrow T_2$.
+    \item Apenas $T_2 \rightarrow T_1$.
+    \item Há arestas nos dois sentidos, indicando ciclo.
+    \item Não há conflitos.
+\end{enumerate}
+
+\item Um plano cujo grafo de precedência possui ciclo é:
+
+\begin{enumerate}[label=\alph*)]
+    \item serializável por conflito.
+    \item não serializável por conflito.
+    \item obrigatoriamente serial.
+    \item sempre sem cascata.
+\end{enumerate}
+
+\item Considere o plano:
+\[
+r_1(X),\ w_1(X),\ r_2(Y),\ w_2(Y)
+\]
+Assumindo que $X$ e $Y$ são itens distintos, esse plano é:
+
+\begin{enumerate}[label=\alph*)]
+    \item não serializável por conflito, pois é intercalado.
+    \item serializável por conflito, pois não há conflitos entre $T_1$ e $T_2$.
+    \item obrigatoriamente não restaurável.
+    \item um exemplo de leitura suja.
+\end{enumerate}
+
+\item Considere o plano:
+\[
+w_1(X),\ r_2(X),\ c_2,\ c_1
+\]
+Se $c_i$ representa \texttt{COMMIT} de $T_i$, esse plano é:
+
+\begin{enumerate}[label=\alph*)]
+    \item restaurável, pois $T_2$ confirma antes de $T_1$.
+    \item não restaurável, pois $T_2$ leu valor escrito por $T_1$ e confirmou antes de $T_1$.
+    \item estrito, pois todo plano com \texttt{COMMIT} é estrito.
+    \item serial, pois possui duas confirmações.
+\end{enumerate}
+
+\item Considere o plano:
+\[
+w_1(X),\ r_2(X),\ c_1,\ c_2
+\]
+Esse plano é restaurável porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item $T_2$ confirma depois da transação de quem leu o valor.
+    \item $T_2$ confirma antes de $T_1$.
+    \item não existe leitura de $X$.
+    \item toda escrita gera rollback automático.
+\end{enumerate}
+
+\item Considere o plano:
+\[
+w_1(X),\ r_2(X),\ c_1,\ c_2
+\]
+Esse plano é sem cascata?
+
+\begin{enumerate}[label=\alph*)]
+    \item Sim, pois $T_2$ só leu $X$ depois do \texttt{COMMIT} de $T_1$.
+    \item Não, pois $T_2$ leu $X$ antes do \texttt{COMMIT} de $T_1$.
+    \item Sim, pois todo plano restaurável é sem cascata.
+    \item Não, pois não possui \texttt{ROLLBACK}.
+\end{enumerate}
+
+\item Considere o plano:
+\[
+w_1(X),\ c_1,\ r_2(X),\ c_2
+\]
+Esse plano é:
+
+\begin{enumerate}[label=\alph*)]
+    \item sem cascata, pois $T_2$ lê o valor de $T_1$ apenas após $T_1$ confirmar.
+    \item não restaurável, pois $T_2$ lê depois do \texttt{COMMIT}.
+    \item sempre não serializável.
+    \item inválido por conter leitura.
+\end{enumerate}
+
+\item Considere o plano:
+\[
+w_1(X),\ w_2(X),\ c_1,\ c_2
+\]
+Esse plano viola a propriedade de plano estrito porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item $T_2$ escreve $X$ antes de $T_1$ confirmar ou abortar.
+    \item duas escritas nunca entram em conflito.
+    \item $T_1$ confirma antes de $T_2$.
+    \item não existe operação de leitura.
+\end{enumerate}
+
+\item Considere o plano:
+\[
+w_1(X),\ a_1,\ r_2(X)
+\]
+Se $a_1$ representa \texttt{ABORT} de $T_1$, a leitura de $T_2$:
+
+\begin{enumerate}[label=\alph*)]
+    \item ocorre depois do abort de $T_1$, então não lê valor não confirmado de $T_1$.
+    \item é sempre leitura suja.
+    \item torna o plano não serializável automaticamente.
+    \item equivale a \texttt{COMMIT}.
+\end{enumerate}
+
+\item Considere a situação: duas transações leem o mesmo saldo $X=100$, ambas calculam novo valor e ambas escrevem no banco, uma com $X=90$ e outra com $X=80$. O problema típico é:
+
+\begin{enumerate}[label=\alph*)]
+    \item atualização perdida.
+    \item normalização excessiva.
+    \item chave estrangeira inválida.
+    \item cobertura mínima.
+\end{enumerate}
+
+\item Considere:
+\[
+r_1(X),\ w_1(X),\ r_2(X),\ a_1
+\]
+Se $T_2$ leu o valor escrito por $T_1$ antes de $T_1$ abortar, ocorreu:
+
+\begin{enumerate}[label=\alph*)]
+    \item leitura suja.
+    \item leitura serial.
+    \item plano estrito.
+    \item 1FN.
+\end{enumerate}
+
+\item Qual sequência representa corretamente uma transação SQL que desfaz alterações ao detectar erro?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{START TRANSACTION;} comandos; erro; \texttt{ROLLBACK;}
+    \item \texttt{COMMIT;} comandos; erro; \texttt{START TRANSACTION;}
+    \item \texttt{GROUP BY;} comandos; erro; \texttt{HAVING;}
+    \item \texttt{CREATE TABLE;} erro; \texttt{SELECT DISTINCT;}
+\end{enumerate}
+
+\item Em um plano restaurável, se $T_j$ lê um item escrito por $T_i$, então:
+
+\begin{enumerate}[label=\alph*)]
+    \item $T_j$ deve confirmar antes de $T_i$.
+    \item $T_j$ só deve confirmar depois de $T_i$ confirmar.
+    \item $T_i$ nunca pode escrever.
+    \item $T_j$ deve obrigatoriamente abortar.
+\end{enumerate}
+
+\item Em um plano sem cascata, uma transação só pode ler valores escritos por outra transação depois que:
+
+\begin{enumerate}[label=\alph*)]
+    \item a outra transação confirmar.
+    \item a outra transação iniciar.
+    \item a outra transação ler qualquer item.
+    \item o banco ser normalizado.
+\end{enumerate}
+
+\item Em um plano estrito, uma transação não deve ler nem escrever um item $X$ escrito por outra transação até que essa outra transação:
+
+\begin{enumerate}[label=\alph*)]
+    \item confirme ou aborte.
+    \item leia $X$ novamente.
+    \item crie uma tabela.
+    \item execute \texttt{SELECT DISTINCT}.
+\end{enumerate}
+
+
+\end{enumerate}
+
+\newpage
+
+\section*{Gabarito}
+
+\begin{multicols}{2}
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item b
+    \item b
+    \item b
+    \item c
+    \item b
+    \item b
+    \item b
+    \item a
+    \item b
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item b
+    \item a
+    \item a
+\end{enumerate}
+\end{multicols}
+
+\end{document}

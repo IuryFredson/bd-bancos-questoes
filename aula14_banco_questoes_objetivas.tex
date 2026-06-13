@@ -1,0 +1,1011 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{multicol}
+\usepackage{xcolor}
+
+\geometry{margin=2.3cm}
+
+\title{Banco de Questões Objetivas -- Aula 14\\
+Técnicas de Recuperação de Banco de Dados}
+\author{Banco de Dados}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Conteúdos abordados}
+
+\begin{itemize}
+    \item objetivos da recuperação de banco de dados;
+    \item restauração típica após falhas;
+    \item log do sistema;
+    \item ponto de efetivação;
+    \item imagens anterior e posterior;
+    \item UNDO e REDO;
+    \item gravação adiantada de log;
+    \item atualização in loco e atualização sombra;
+    \item políticas \textit{steal}, \textit{no-steal}, \textit{force} e \textit{no-force};
+    \item atualização adiada;
+    \item atualização imediata;
+    \item NO-UNDO/REDO;
+    \item UNDO/REDO;
+    \item UNDO/NO-REDO;
+    \item NO-UNDO/NO-REDO;
+    \item checkpoints;
+    \item paginação sombra;
+    \item recuperação em ambientes multiusuários;
+    \item backup e falhas catastróficas.
+\end{itemize}
+
+\section{Questões de múltipla escolha}
+
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+
+\item O objetivo principal das técnicas de recuperação de banco de dados é:
+
+\begin{enumerate}[label=\alph*)]
+    \item aumentar a quantidade de tabelas do sistema.
+    \item restaurar o banco para um estado consistente após falhas.
+    \item substituir completamente o controle de concorrência.
+    \item impedir qualquer execução de transações.
+\end{enumerate}
+
+\item As técnicas de recuperação contribuem principalmente para garantir a propriedade ACID de:
+
+\begin{enumerate}[label=\alph*)]
+    \item atomicidade.
+    \item isolamento apenas.
+    \item normalização.
+    \item independência lógica.
+\end{enumerate}
+
+\item Além da atomicidade, a recuperação também está diretamente relacionada à:
+
+\begin{enumerate}[label=\alph*)]
+    \item durabilidade.
+    \item projeção.
+    \item junção.
+    \item dependência funcional.
+\end{enumerate}
+
+\item Uma falha de transação pode ocorrer devido a:
+
+\begin{enumerate}[label=\alph*)]
+    \item erro lógico, violação de restrição ou aborto explícito.
+    \item uso de uma chave primária.
+    \item execução de uma consulta correta.
+    \item existência de índices.
+\end{enumerate}
+
+\item Uma falha de sistema pode ser causada por:
+
+\begin{enumerate}[label=\alph*)]
+    \item queda de energia ou falha do sistema operacional.
+    \item uma consulta com \texttt{ORDER BY}.
+    \item uma relação em BCNF.
+    \item um atributo \texttt{NOT NULL}.
+\end{enumerate}
+
+\item Em uma restauração típica, o sistema deve:
+
+\begin{enumerate}[label=\alph*)]
+    \item analisar o estado das transações e restaurar os efeitos corretos.
+    \item remover todas as tabelas.
+    \item apagar obrigatoriamente o log.
+    \item confirmar todas as transações incompletas.
+\end{enumerate}
+
+\item O log do sistema é utilizado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item registrar informações sobre a execução e atualização das transações.
+    \item armazenar somente consultas \texttt{SELECT}.
+    \item substituir o banco de dados.
+    \item controlar apenas permissões de usuários.
+\end{enumerate}
+
+\item Um registro de log associado a uma atualização normalmente contém:
+
+\begin{enumerate}[label=\alph*)]
+    \item identificação da transação, item alterado e valores anterior e posterior.
+    \item apenas o nome do banco.
+    \item somente o horário de início do SGBD.
+    \item somente o comando \texttt{COMMIT}.
+\end{enumerate}
+
+\item A imagem anterior de um item, também chamada de BFIM, representa:
+
+\begin{enumerate}[label=\alph*)]
+    \item o valor do item antes da atualização.
+    \item o valor do item após a atualização.
+    \item a chave primária da tabela.
+    \item o nome da transação.
+\end{enumerate}
+
+\item A imagem posterior de um item, também chamada de AFIM, representa:
+
+\begin{enumerate}[label=\alph*)]
+    \item o valor do item antes da atualização.
+    \item o valor do item depois da atualização.
+    \item o estado inicial do servidor.
+    \item o identificador do log.
+\end{enumerate}
+
+\item A operação UNDO utiliza normalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item a imagem anterior do item.
+    \item a imagem posterior do item.
+    \item apenas o identificador da tabela.
+    \item apenas o comando \texttt{COMMIT}.
+\end{enumerate}
+
+\item A operação REDO utiliza normalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item a imagem anterior.
+    \item a imagem posterior.
+    \item uma chave estrangeira.
+    \item o valor nulo.
+\end{enumerate}
+
+\item O propósito do UNDO é:
+
+\begin{enumerate}[label=\alph*)]
+    \item desfazer os efeitos de uma transação incompleta ou abortada.
+    \item repetir uma transação confirmada.
+    \item criar um backup.
+    \item apagar todo o histórico.
+\end{enumerate}
+
+\item O propósito do REDO é:
+
+\begin{enumerate}[label=\alph*)]
+    \item refazer atualizações de uma transação confirmada que podem não ter chegado ao disco.
+    \item desfazer uma transação abortada.
+    \item cancelar todos os commits.
+    \item impedir uso do log.
+\end{enumerate}
+
+\item O ponto de efetivação de uma transação corresponde ao momento em que:
+
+\begin{enumerate}[label=\alph*)]
+    \item a transação é considerada confirmada.
+    \item a transação inicia sua primeira leitura.
+    \item o banco é apagado.
+    \item ocorre necessariamente uma falha.
+\end{enumerate}
+
+\item Uma transação incompleta no momento da falha geralmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item não deve ter seus efeitos considerados definitivamente confirmados.
+    \item deve sempre receber \texttt{COMMIT}.
+    \item deve ser tratada como concluída.
+    \item não precisa ser analisada.
+\end{enumerate}
+
+\item A gravação adiantada de log é conhecida pela sigla:
+
+\begin{enumerate}[label=\alph*)]
+    \item WAL.
+    \item DDL.
+    \item JDBC.
+    \item BCNF.
+\end{enumerate}
+
+\item A regra básica de \textit{Write-Ahead Logging} determina que:
+
+\begin{enumerate}[label=\alph*)]
+    \item o registro de log correspondente deve chegar ao disco antes da página alterada.
+    \item a página deve ser escrita antes do log.
+    \item o log só deve ser criado após uma falha.
+    \item as transações não devem usar \texttt{COMMIT}.
+\end{enumerate}
+
+\item Antes de confirmar uma transação, o WAL também exige normalmente que:
+
+\begin{enumerate}[label=\alph*)]
+    \item seus registros de log relevantes estejam persistidos.
+    \item todas as tabelas sejam bloqueadas permanentemente.
+    \item o banco seja reiniciado.
+    \item todos os buffers sejam descartados.
+\end{enumerate}
+
+\item Uma atualização in loco ocorre quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item o novo valor substitui o valor antigo na mesma localização do banco.
+    \item uma cópia totalmente separada do banco é criada.
+    \item nenhuma página é modificada.
+    \item apenas o log é atualizado.
+\end{enumerate}
+
+\item Na técnica de atualização sombra:
+
+\begin{enumerate}[label=\alph*)]
+    \item as modificações são feitas em páginas alternativas, preservando a versão anterior.
+    \item toda atualização sobrescreve imediatamente a página original.
+    \item o log é obrigatoriamente o único mecanismo existente.
+    \item não existem páginas em disco.
+\end{enumerate}
+
+\item Uma vantagem da atualização sombra é:
+
+\begin{enumerate}[label=\alph*)]
+    \item possibilitar recuperação sem UNDO e sem REDO em sua forma básica.
+    \item exigir obrigatoriamente UNDO e REDO.
+    \item impedir qualquer commit.
+    \item eliminar o armazenamento em disco.
+\end{enumerate}
+
+\item Uma desvantagem da atualização sombra é:
+
+\begin{enumerate}[label=\alph*)]
+    \item custo de gerenciamento e possível fragmentação.
+    \item impossibilidade de manter uma versão antiga.
+    \item necessidade obrigatória de UNDO.
+    \item impossibilidade de usar ponteiros.
+\end{enumerate}
+
+\item A política \textit{steal} permite que:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma página alterada por transação não confirmada seja escrita no disco.
+    \item somente páginas de transações confirmadas sejam escritas.
+    \item nenhuma página seja escrita antes do encerramento do SGBD.
+    \item apenas o log permaneça na memória.
+\end{enumerate}
+
+\item A política \textit{no-steal} determina que:
+
+\begin{enumerate}[label=\alph*)]
+    \item páginas alteradas por transações não confirmadas não sejam gravadas no banco.
+    \item qualquer página possa ser escrita a qualquer momento.
+    \item todo commit exija falha.
+    \item o log não seja utilizado.
+\end{enumerate}
+
+\item A política \textit{force} determina que:
+
+\begin{enumerate}[label=\alph*)]
+    \item todas as atualizações da transação sejam gravadas no banco no momento do commit.
+    \item nenhuma atualização seja gravada no commit.
+    \item todas as transações sejam abortadas.
+    \item o log seja removido.
+\end{enumerate}
+
+\item A política \textit{no-force} permite que:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma transação confirme antes que todas as páginas alteradas sejam gravadas no banco.
+    \item toda página seja obrigatoriamente gravada antes do commit.
+    \item nenhuma transação confirme.
+    \item o sistema dispense REDO em qualquer situação.
+\end{enumerate}
+
+\item A combinação \textit{steal/no-force} normalmente exige:
+
+\begin{enumerate}[label=\alph*)]
+    \item UNDO e REDO.
+    \item somente UNDO.
+    \item somente REDO.
+    \item nem UNDO nem REDO.
+\end{enumerate}
+
+\item A combinação \textit{no-steal/no-force} normalmente exige:
+
+\begin{enumerate}[label=\alph*)]
+    \item somente REDO.
+    \item somente UNDO.
+    \item UNDO e REDO.
+    \item nem UNDO nem REDO.
+\end{enumerate}
+
+\item A combinação \textit{steal/force} normalmente exige:
+
+\begin{enumerate}[label=\alph*)]
+    \item somente UNDO.
+    \item somente REDO.
+    \item UNDO e REDO.
+    \item nem UNDO nem REDO.
+\end{enumerate}
+
+\item A combinação \textit{no-steal/force} normalmente exige:
+
+\begin{enumerate}[label=\alph*)]
+    \item nem UNDO nem REDO.
+    \item UNDO e REDO.
+    \item apenas REDO.
+    \item apenas UNDO.
+\end{enumerate}
+
+\item Na atualização adiada, as atualizações no banco são realizadas:
+
+\begin{enumerate}[label=\alph*)]
+    \item somente depois que a transação alcança seu ponto de efetivação.
+    \item imediatamente após cada comando.
+    \item somente antes de iniciar a transação.
+    \item apenas após uma falha.
+\end{enumerate}
+
+\item Antes do commit, uma transação com atualização adiada modifica:
+
+\begin{enumerate}[label=\alph*)]
+    \item buffers e registros de log, mas não o banco persistente.
+    \item diretamente todas as páginas do banco.
+    \item apenas as chaves primárias.
+    \item somente o catálogo.
+\end{enumerate}
+
+\item Se uma falha ocorre antes do commit em atualização adiada:
+
+\begin{enumerate}[label=\alph*)]
+    \item não é necessário UNDO, pois o banco não recebeu as alterações.
+    \item é necessário obrigatoriamente UNDO.
+    \item a transação deve ser refeita.
+    \item o banco inteiro deve ser restaurado de backup.
+\end{enumerate}
+
+\item Se uma transação confirmou, mas algumas de suas atualizações ainda não chegaram ao banco:
+
+\begin{enumerate}[label=\alph*)]
+    \item pode ser necessário REDO.
+    \item pode ser necessário apenas UNDO.
+    \item nenhum mecanismo é necessário.
+    \item a transação deve ser considerada abortada.
+\end{enumerate}
+
+\item O protocolo típico de atualização adiada é classificado como:
+
+\begin{enumerate}[label=\alph*)]
+    \item NO-UNDO/REDO.
+    \item UNDO/REDO.
+    \item UNDO/NO-REDO.
+    \item NO-UNDO/NO-REDO.
+\end{enumerate}
+
+\item Em NO-UNDO/REDO, uma transação:
+
+\begin{enumerate}[label=\alph*)]
+    \item não escreve alterações no banco antes do commit.
+    \item sempre escreve no banco antes de registrar no log.
+    \item exige UNDO em qualquer falha.
+    \item nunca utiliza REDO.
+\end{enumerate}
+
+\item Em NO-UNDO/REDO, após uma falha devem ser refeitas:
+
+\begin{enumerate}[label=\alph*)]
+    \item transações confirmadas cujos efeitos podem não estar persistidos.
+    \item todas as transações incompletas.
+    \item apenas transações abortadas.
+    \item somente transações que não alteraram dados.
+\end{enumerate}
+
+\item Na atualização imediata, uma transação pode:
+
+\begin{enumerate}[label=\alph*)]
+    \item atualizar o banco antes de chegar ao commit.
+    \item atualizar o banco apenas depois do commit.
+    \item executar somente leituras.
+    \item dispensar completamente o log.
+\end{enumerate}
+
+\item Como a atualização imediata pode alterar o banco antes do commit:
+
+\begin{enumerate}[label=\alph*)]
+    \item pode ser necessário desfazer efeitos de transações não confirmadas.
+    \item UNDO nunca é necessário.
+    \item REDO nunca é necessário.
+    \item o log não precisa registrar valores antigos.
+\end{enumerate}
+
+\item A forma mais geral da atualização imediata é:
+
+\begin{enumerate}[label=\alph*)]
+    \item UNDO/REDO.
+    \item NO-UNDO/REDO.
+    \item NO-UNDO/NO-REDO.
+    \item REDO/NO-COMMIT.
+\end{enumerate}
+
+\item Em UNDO/REDO, após uma falha:
+
+\begin{enumerate}[label=\alph*)]
+    \item transações não confirmadas são desfeitas e confirmadas podem ser refeitas.
+    \item todas as transações são somente refeitas.
+    \item todas as transações são somente desfeitas.
+    \item nenhuma operação é realizada.
+\end{enumerate}
+
+\item O UNDO deve processar os registros normalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item na ordem inversa em que as atualizações ocorreram.
+    \item na ordem alfabética dos itens.
+    \item sempre do início para o fim.
+    \item sem considerar a ordem.
+\end{enumerate}
+
+\item O REDO deve processar os registros normalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item na ordem em que foram registrados no log.
+    \item sempre na ordem inversa.
+    \item de forma aleatória.
+    \item somente por nome de tabela.
+\end{enumerate}
+
+\item A variação UNDO/NO-REDO ocorre quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item alterações não confirmadas podem chegar ao banco, mas todas as alterações confirmadas são forçadas ao disco.
+    \item nenhuma alteração não confirmada chega ao banco e alterações confirmadas podem permanecer apenas em memória.
+    \item nenhuma alteração chega ao banco.
+    \item apenas paginação sombra é utilizada.
+\end{enumerate}
+
+\item Em UNDO/NO-REDO, uma transação confirmada não precisa de REDO porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item suas alterações são gravadas no banco antes da confirmação ser concluída.
+    \item ela nunca atualiza o banco.
+    \item seus registros de log são ignorados.
+    \item toda transação confirmada é desfeita.
+\end{enumerate}
+
+\item Uma técnica classificada como NO-UNDO/NO-REDO é:
+
+\begin{enumerate}[label=\alph*)]
+    \item paginação sombra.
+    \item atualização imediata \textit{steal/no-force}.
+    \item atualização adiada \textit{no-force}.
+    \item WAL convencional com UNDO/REDO.
+\end{enumerate}
+
+\item Na paginação sombra, a tabela de páginas sombra:
+
+\begin{enumerate}[label=\alph*)]
+    \item representa a versão estável anterior do banco.
+    \item é sobrescrita a cada pequena modificação.
+    \item contém apenas transações abortadas.
+    \item não aponta para páginas em disco.
+\end{enumerate}
+
+\item Durante a execução com paginação sombra, as alterações são refletidas:
+
+\begin{enumerate}[label=\alph*)]
+    \item em uma tabela de páginas corrente e em novas páginas.
+    \item diretamente na tabela sombra.
+    \item apenas no log.
+    \item somente no catálogo.
+\end{enumerate}
+
+\item No commit da paginação sombra:
+
+\begin{enumerate}[label=\alph*)]
+    \item o ponteiro para a tabela corrente passa a representar a versão oficial.
+    \item todas as páginas novas são descartadas.
+    \item o banco volta obrigatoriamente à versão antiga.
+    \item todas as transações são desfeitas.
+\end{enumerate}
+
+\item Em caso de falha antes do commit na paginação sombra:
+
+\begin{enumerate}[label=\alph*)]
+    \item a tabela sombra continua apontando para a versão consistente anterior.
+    \item é necessário refazer obrigatoriamente todas as alterações.
+    \item a versão anterior é perdida.
+    \item todo o banco precisa ser apagado.
+\end{enumerate}
+
+\item Um checkpoint é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item limitar a parte do log que precisa ser examinada durante a recuperação.
+    \item substituir permanentemente o log.
+    \item impedir qualquer atualização.
+    \item eliminar backups.
+\end{enumerate}
+
+\item Ao criar um checkpoint, o sistema registra:
+
+\begin{enumerate}[label=\alph*)]
+    \item um ponto conhecido do estado do sistema e informações sobre transações ativas.
+    \item apenas os nomes das tabelas.
+    \item somente as chaves estrangeiras.
+    \item apenas comandos \texttt{SELECT}.
+\end{enumerate}
+
+\item Após uma falha, o checkpoint permite que a recuperação:
+
+\begin{enumerate}[label=\alph*)]
+    \item comece a análise a partir de um ponto mais recente do log.
+    \item sempre leia o log desde o início da existência do banco.
+    \item dispense análise das transações.
+    \item confirme todas as transações incompletas.
+\end{enumerate}
+
+\item Quanto mais frequentes forem os checkpoints:
+
+\begin{enumerate}[label=\alph*)]
+    \item menor pode ser o trabalho de recuperação, mas maior o custo durante execução.
+    \item maior será sempre o tempo de recuperação.
+    \item menor será o uso de log, sem qualquer custo.
+    \item menos consistência o banco terá.
+\end{enumerate}
+
+\item Em recuperação multiusuário, o algoritmo precisa considerar:
+
+\begin{enumerate}[label=\alph*)]
+    \item transações concorrentes e o protocolo de controle de concorrência.
+    \item somente uma transação por vez.
+    \item apenas comandos DDL.
+    \item ausência de bloqueios.
+\end{enumerate}
+
+\item Um protocolo de concorrência estrito facilita a recuperação porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item impede leitura e escrita sobre dados produzidos por transações não confirmadas.
+    \item permite livre leitura de valores sujos.
+    \item elimina o log.
+    \item impede qualquer commit.
+\end{enumerate}
+
+\item Em recuperação UNDO/REDO com checkpoint, transações ativas no momento da falha devem:
+
+\begin{enumerate}[label=\alph*)]
+    \item ser desfeitas.
+    \item ser sempre refeitas.
+    \item ser consideradas confirmadas.
+    \item ser ignoradas.
+\end{enumerate}
+
+\item Em recuperação UNDO/REDO com checkpoint, transações confirmadas após o checkpoint podem:
+
+\begin{enumerate}[label=\alph*)]
+    \item precisar ser refeitas.
+    \item precisar ser sempre desfeitas.
+    \item ser consideradas inexistentes.
+    \item ser removidas do banco.
+\end{enumerate}
+
+\item Uma falha catastrófica pode envolver:
+
+\begin{enumerate}[label=\alph*)]
+    \item perda ou dano do disco onde está o banco.
+    \item apenas erro de sintaxe em uma consulta.
+    \item somente uma leitura suja.
+    \item uso de \texttt{ROLLBACK}.
+\end{enumerate}
+
+\item Para recuperação de falhas catastróficas é necessário principalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item backup do banco e dos registros necessários.
+    \item somente memória cache.
+    \item apenas bloqueios compartilhados.
+    \item apenas normalização.
+\end{enumerate}
+
+\item O backup completo deve incluir normalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item dados do banco e informações de log relevantes.
+    \item apenas nomes de usuários.
+    \item somente tabelas vazias.
+    \item apenas comandos \texttt{SELECT}.
+\end{enumerate}
+
+\item O log costuma ser copiado com maior frequência que o banco completo porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item permite recuperar alterações realizadas após o último backup.
+    \item não contém informações de transações.
+    \item sempre ocupa mais espaço que o banco.
+    \item substitui definitivamente o backup.
+\end{enumerate}
+
+\item Para recuperar após falha catastrófica, uma estratégia é:
+
+\begin{enumerate}[label=\alph*)]
+    \item restaurar o backup e reaplicar alterações confirmadas registradas no log.
+    \item apagar o backup e manter apenas transações incompletas.
+    \item executar UNDO de todas as transações históricas.
+    \item criar um banco vazio.
+\end{enumerate}
+
+\item A recuperação de banco de dados depende da interação entre:
+
+\begin{enumerate}[label=\alph*)]
+    \item gerenciamento de buffers, log, transações e armazenamento persistente.
+    \item somente normalização e SQL.
+    \item apenas criação de índices.
+    \item apenas controle de usuários.
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Questões de verdadeiro ou falso}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) A recuperação ajuda a garantir atomicidade.
+    \item ( \quad ) A recuperação também ajuda a garantir durabilidade.
+    \item ( \quad ) Falhas podem deixar transações incompletas.
+    \item ( \quad ) Recuperação não possui relação com consistência.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) O log registra informações sobre atualizações.
+    \item ( \quad ) A imagem anterior pode ser usada no UNDO.
+    \item ( \quad ) A imagem posterior pode ser usada no REDO.
+    \item ( \quad ) O log deve existir somente depois da falha.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) WAL significa gravação adiantada de log.
+    \item ( \quad ) O log deve chegar ao disco antes da página alterada.
+    \item ( \quad ) Registros de log de uma transação devem estar persistidos antes do commit.
+    \item ( \quad ) WAL determina que a página seja escrita antes do log.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) UNDO restaura valores anteriores.
+    \item ( \quad ) REDO reaplica valores posteriores.
+    \item ( \quad ) UNDO costuma percorrer operações na ordem inversa.
+    \item ( \quad ) REDO é utilizado apenas para transações abortadas.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) \textit{Steal} permite gravar página de transação não confirmada.
+    \item ( \quad ) \textit{No-steal} evita que efeitos não confirmados cheguem ao banco.
+    \item ( \quad ) \textit{Force} grava atualizações no commit.
+    \item ( \quad ) \textit{No-force} elimina sempre a necessidade de REDO.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Atualização adiada não altera o banco antes do commit.
+    \item ( \quad ) Atualização adiada típica é NO-UNDO/REDO.
+    \item ( \quad ) Transações incompletas em atualização adiada precisam sempre de UNDO.
+    \item ( \quad ) Transações confirmadas podem precisar de REDO.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Atualização imediata pode modificar o banco antes do commit.
+    \item ( \quad ) UNDO/REDO é uma técnica de atualização imediata.
+    \item ( \quad ) Em UNDO/REDO, transações ativas são desfeitas.
+    \item ( \quad ) Em UNDO/REDO, transações confirmadas nunca precisam de REDO.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) UNDO/NO-REDO pode usar política \textit{steal/force}.
+    \item ( \quad ) NO-UNDO/REDO pode usar política \textit{no-steal/no-force}.
+    \item ( \quad ) NO-UNDO/NO-REDO pode ser obtido com \textit{no-steal/force}.
+    \item ( \quad ) \textit{Steal/no-force} dispensa UNDO e REDO.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Paginação sombra mantém uma versão estável anterior.
+    \item ( \quad ) Alterações são feitas em páginas novas.
+    \item ( \quad ) O commit pode trocar o ponteiro da tabela de páginas.
+    \item ( \quad ) Paginação sombra básica exige sempre UNDO e REDO.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Checkpoints reduzem o trecho do log analisado na recuperação.
+    \item ( \quad ) Checkpoints podem registrar transações ativas.
+    \item ( \quad ) Checkpoints frequentes podem aumentar o custo normal de execução.
+    \item ( \quad ) Checkpoints tornam o log desnecessário.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Recuperação multiusuário depende do controle de concorrência.
+    \item ( \quad ) Escalonamentos estritos facilitam recuperação.
+    \item ( \quad ) Em escalonamento estrito, valores não confirmados ficam livremente disponíveis.
+    \item ( \quad ) Deadlocks podem causar abortos que exigem UNDO.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Falha catastrófica pode destruir o armazenamento principal do banco.
+    \item ( \quad ) Backup é necessário para falhas catastróficas.
+    \item ( \quad ) O log pode permitir reaplicar alterações após o último backup.
+    \item ( \quad ) Backup completo nunca inclui dados do banco.
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Questões de aplicação objetiva}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Uma transação $T_1$ alterou o saldo de R\$500 para R\$300, mas sofreu falha antes do commit. O banco já contém R\$300 e o log possui os dois valores. Qual ação é necessária?
+
+\begin{enumerate}[label=\alph*)]
+    \item REDO para gravar R\$300 novamente.
+    \item UNDO para restaurar R\$500.
+    \item Nenhuma ação.
+    \item Confirmar automaticamente a transação.
+\end{enumerate}
+
+\item Uma transação confirmou uma alteração de R\$500 para R\$300, mas a página modificada ainda não havia sido gravada no disco quando ocorreu uma falha. Qual ação pode ser necessária?
+
+\begin{enumerate}[label=\alph*)]
+    \item UNDO para restaurar R\$500.
+    \item REDO para reaplicar R\$300.
+    \item Abortar definitivamente todas as transações.
+    \item Excluir o log.
+\end{enumerate}
+
+\item Em um sistema de atualização adiada, $T_1$ falha antes do commit. O que deve acontecer?
+
+\begin{enumerate}[label=\alph*)]
+    \item Deve ser executado UNDO no banco.
+    \item Nenhum UNDO é necessário, pois suas alterações não chegaram ao banco.
+    \item Todas as alterações devem ser refeitas.
+    \item O backup completo deve ser restaurado.
+\end{enumerate}
+
+\item Em um sistema NO-UNDO/REDO, $T_1$ confirmou e $T_2$ estava ativa no momento da falha. A recuperação deve:
+
+\begin{enumerate}[label=\alph*)]
+    \item refazer $T_1$ se necessário e ignorar os efeitos de $T_2$ no banco.
+    \item desfazer $T_1$ e refazer $T_2$.
+    \item refazer ambas obrigatoriamente.
+    \item desfazer ambas.
+\end{enumerate}
+
+\item Em um sistema UNDO/REDO, $T_1$ confirmou e $T_2$ estava ativa na falha. A recuperação deve:
+
+\begin{enumerate}[label=\alph*)]
+    \item executar UNDO de $T_1$ e REDO de $T_2$.
+    \item executar REDO de $T_1$ e UNDO de $T_2$.
+    \item executar UNDO de ambas.
+    \item ignorar ambas.
+\end{enumerate}
+
+\item Um sistema permite que páginas de transações não confirmadas sejam gravadas no banco e também permite commit antes de todas as páginas chegarem ao disco. Qual algoritmo é necessário?
+
+\begin{enumerate}[label=\alph*)]
+    \item NO-UNDO/NO-REDO.
+    \item NO-UNDO/REDO.
+    \item UNDO/NO-REDO.
+    \item UNDO/REDO.
+\end{enumerate}
+
+\item Um sistema não permite gravar páginas de transações não confirmadas, mas permite commit antes da gravação de todas as páginas. Qual algoritmo é adequado?
+
+\begin{enumerate}[label=\alph*)]
+    \item NO-UNDO/REDO.
+    \item UNDO/REDO.
+    \item UNDO/NO-REDO.
+    \item NO-UNDO/NO-REDO.
+\end{enumerate}
+
+\item Um sistema pode gravar páginas de transações não confirmadas, mas força todas as páginas da transação no commit. Qual algoritmo é adequado?
+
+\begin{enumerate}[label=\alph*)]
+    \item NO-UNDO/REDO.
+    \item UNDO/NO-REDO.
+    \item UNDO/REDO.
+    \item NO-UNDO/NO-REDO.
+\end{enumerate}
+
+\item Um sistema não grava páginas não confirmadas e força todas as páginas no commit. Qual algoritmo pode ser utilizado?
+
+\begin{enumerate}[label=\alph*)]
+    \item UNDO/REDO.
+    \item NO-UNDO/REDO.
+    \item UNDO/NO-REDO.
+    \item NO-UNDO/NO-REDO.
+\end{enumerate}
+
+\item Considere o log:
+
+\[
+\langle start,T_1\rangle
+\]
+\[
+\langle T_1,X,10,20\rangle
+\]
+\[
+\langle commit,T_1\rangle
+\]
+\[
+\langle start,T_2\rangle
+\]
+\[
+\langle T_2,Y,30,50\rangle
+\]
+
+O sistema falha logo depois. Em UNDO/REDO, deve-se:
+
+\begin{enumerate}[label=\alph*)]
+    \item desfazer $T_1$ e refazer $T_2$.
+    \item refazer $T_1$ e desfazer $T_2$.
+    \item refazer ambas.
+    \item desfazer ambas.
+\end{enumerate}
+
+\item Para desfazer a atualização de $Y$ de 30 para 50, o sistema deve gravar em $Y$:
+
+\begin{enumerate}[label=\alph*)]
+    \item 50.
+    \item 30.
+    \item 20.
+    \item 10.
+\end{enumerate}
+
+\item Para refazer a atualização de $X$ de 10 para 20, o sistema deve gravar em $X$:
+
+\begin{enumerate}[label=\alph*)]
+    \item 10.
+    \item 20.
+    \item 30.
+    \item 50.
+\end{enumerate}
+
+\item Uma página alterada é gravada no disco antes de seu registro de log. Logo depois ocorre uma falha. Qual princípio foi violado?
+
+\begin{enumerate}[label=\alph*)]
+    \item Two-Phase Locking.
+    \item Write-Ahead Logging.
+    \item Primeira Forma Normal.
+    \item Atomicidade de esquema.
+\end{enumerate}
+
+\item O último backup completo foi realizado no domingo. Na quarta-feira, o disco foi perdido, mas há cópias do log até o momento da falha. A recuperação adequada é:
+
+\begin{enumerate}[label=\alph*)]
+    \item restaurar o backup de domingo e reaplicar transações confirmadas do log.
+    \item utilizar apenas \texttt{ROLLBACK}.
+    \item descartar o backup e criar um banco vazio.
+    \item desfazer todas as transações desde a criação do banco.
+\end{enumerate}
+
+\item Um banco utiliza paginação sombra e falha antes do commit. A recuperação deve usar:
+
+\begin{enumerate}[label=\alph*)]
+    \item a tabela de páginas sombra que aponta para a versão consistente anterior.
+    \item UNDO obrigatório de todas as páginas.
+    \item REDO obrigatório de todas as páginas.
+    \item apenas o último comando SQL executado.
+\end{enumerate}
+
+\end{enumerate}
+
+\newpage
+
+\section*{Gabarito}
+
+\begin{multicols}{2}
+
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+    \item b
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item b
+    \item a
+    \item b
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, F, V
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, F, V
+    \item V, V, V, F
+    \item b
+    \item b
+    \item b
+    \item a
+    \item b
+    \item d
+    \item a
+    \item b
+    \item d
+    \item b
+    \item b
+    \item b
+    \item b
+    \item a
+    \item a
+\end{enumerate}
+
+\end{multicols}
+
+\end{document}

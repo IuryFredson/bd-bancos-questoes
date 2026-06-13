@@ -1,0 +1,770 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{multicol}
+
+\geometry{margin=2.3cm}
+
+\title{Banco de Questões Objetivas -- Aula 09\\Dependência Funcional e Normalização}
+\author{Banco de Dados}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Instruções}
+
+Este banco contém questões objetivas sobre:
+\begin{itemize}
+    \item qualidade de projeto de banco de dados;
+    \item redundância e anomalias;
+    \item valores \texttt{NULL};
+    \item tuplas ilegítimas;
+    \item dependência funcional;
+    \item fechamento de atributos;
+    \item cobertura mínima;
+    \item 1FN, 2FN, 3FN e BCNF.
+\end{itemize}
+
+\section{Questões de Múltipla Escolha}
+
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+
+\item O principal objetivo da normalização em bancos de dados relacionais é:
+
+\begin{enumerate}[label=\alph*)]
+    \item aumentar obrigatoriamente o número de consultas SQL.
+    \item reduzir redundâncias e evitar anomalias no projeto do banco.
+    \item eliminar todas as chaves estrangeiras do banco.
+    \item transformar todas as tabelas em uma única relação.
+\end{enumerate}
+
+\item Qual das alternativas representa uma medida informal de qualidade de esquemas relacionais?
+
+\begin{enumerate}[label=\alph*)]
+    \item Uso obrigatório de índices em todos os atributos.
+    \item Redução de valores redundantes nas tuplas.
+    \item Ausência total de consultas com \texttt{JOIN}.
+    \item Criação de uma tabela para cada atributo.
+\end{enumerate}
+
+\item Uma relação possui boa semântica quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item todos os atributos são do tipo inteiro.
+    \item os atributos agrupados fazem sentido juntos no minimundo.
+    \item a relação não possui chave primária.
+    \item a relação possui o maior número possível de atributos.
+\end{enumerate}
+
+\item A redundância em uma relação pode causar principalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item anomalias de inserção, atualização e remoção.
+    \item eliminação automática de valores nulos.
+    \item melhoria obrigatória de desempenho.
+    \item impossibilidade de usar SQL.
+\end{enumerate}
+
+\item Uma anomalia de atualização ocorre quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma informação repetida precisa ser alterada em várias tuplas.
+    \item uma consulta retorna exatamente uma linha.
+    \item uma chave primária é declarada corretamente.
+    \item uma tabela não possui atributos compostos.
+\end{enumerate}
+
+\item Uma anomalia de inserção ocorre quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item não é possível inserir uma informação sem inserir outra informação desnecessária.
+    \item uma tupla é removida corretamente.
+    \item uma tabela possui apenas uma coluna.
+    \item uma chave estrangeira aponta para uma chave primária.
+\end{enumerate}
+
+\item Uma anomalia de remoção ocorre quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item ao remover uma tupla, perde-se também uma informação que deveria permanecer.
+    \item uma tupla possui chave primária.
+    \item uma consulta usa \texttt{WHERE}.
+    \item uma relação está na 1FN.
+\end{enumerate}
+
+\item Muitos valores \texttt{NULL} em uma relação podem indicar:
+
+\begin{enumerate}[label=\alph*)]
+    \item que todos os atributos são obrigatórios.
+    \item possível mistura de conceitos diferentes na mesma tabela.
+    \item que a relação está necessariamente em BCNF.
+    \item que não existem dependências funcionais.
+\end{enumerate}
+
+\item A dependência funcional $X \rightarrow Y$ significa que:
+
+\begin{enumerate}[label=\alph*)]
+    \item $Y$ sempre determina $X$.
+    \item os valores de $X$ determinam os valores de $Y$.
+    \item $X$ e $Y$ precisam ser chaves primárias.
+    \item $X$ e $Y$ não podem aparecer na mesma relação.
+\end{enumerate}
+
+\item Se duas tuplas possuem o mesmo valor em $X$, e existe a dependência $X \rightarrow Y$, então:
+
+\begin{enumerate}[label=\alph*)]
+    \item elas devem possuir o mesmo valor em $Y$.
+    \item elas devem possuir valores diferentes em $Y$.
+    \item uma das tuplas deve ser removida.
+    \item $Y$ deve ser sempre \texttt{NULL}.
+\end{enumerate}
+
+\item Considere a dependência:
+\[
+\text{matricula} \rightarrow \text{nomeAluno}
+\]
+Ela indica que:
+
+\begin{enumerate}[label=\alph*)]
+    \item o nome do aluno determina sua matrícula.
+    \item a matrícula determina o nome do aluno.
+    \item todo aluno possui várias matrículas.
+    \item a matrícula não pode ser chave.
+\end{enumerate}
+
+\item Considere a relação:
+\[
+Aluno(\text{matricula}, \text{nome}, \text{curso}, \text{coordenador})
+\]
+Sabendo que cada matrícula identifica um aluno e cada curso possui um coordenador, qual dependência pode gerar redundância?
+
+\begin{enumerate}[label=\alph*)]
+    \item $\text{nome} \rightarrow \text{matricula}$
+    \item $\text{curso} \rightarrow \text{coordenador}$
+    \item $\text{coordenador} \rightarrow \text{matricula}$
+    \item $\text{nome} \rightarrow \text{curso}$
+\end{enumerate}
+
+\item Para reduzir a redundância da relação:
+\[
+Aluno(\text{matricula}, \text{nome}, \text{curso}, \text{coordenador})
+\]
+uma decomposição adequada seria:
+
+\begin{enumerate}[label=\alph*)]
+    \item $Aluno(\text{matricula})$ apenas.
+    \item $Aluno(\text{matricula}, \text{nome}, \text{curso})$ e $Curso(\text{curso}, \text{coordenador})$.
+    \item $Curso(\text{matricula}, \text{nome})$ apenas.
+    \item $Coordenador(\text{matricula}, \text{curso})$ apenas.
+\end{enumerate}
+
+\item A Primeira Forma Normal exige que:
+
+\begin{enumerate}[label=\alph*)]
+    \item todos os atributos sejam multivalorados.
+    \item os atributos tenham valores atômicos.
+    \item todas as relações tenham apenas uma tupla.
+    \item todas as tabelas possuam exatamente três atributos.
+\end{enumerate}
+
+\item A relação abaixo viola qual forma normal?
+\[
+Aluno(\text{matricula}, \text{nome}, \text{telefones})
+\]
+em que \texttt{telefones} pode conter vários números na mesma célula.
+
+\begin{enumerate}[label=\alph*)]
+    \item 1FN.
+    \item 2FN.
+    \item 3FN.
+    \item BCNF apenas.
+\end{enumerate}
+
+\item A Segunda Forma Normal está relacionada principalmente à eliminação de:
+
+\begin{enumerate}[label=\alph*)]
+    \item dependências parciais.
+    \item dependências transitivas.
+    \item chaves primárias.
+    \item valores atômicos.
+\end{enumerate}
+
+\item Dependência parcial ocorre quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item um atributo não-chave depende apenas de parte de uma chave composta.
+    \item uma chave simples determina todos os atributos.
+    \item uma relação possui apenas um atributo.
+    \item não existem dependências funcionais.
+\end{enumerate}
+
+\item Uma relação com chave primária simples pode violar a 2FN por dependência parcial?
+
+\begin{enumerate}[label=\alph*)]
+    \item Sim, sempre.
+    \item Sim, apenas se houver valores \texttt{NULL}.
+    \item Não, pois dependência parcial exige chave composta.
+    \item Não, pois toda relação com chave simples está em BCNF.
+\end{enumerate}
+
+\item A Terceira Forma Normal busca eliminar principalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item dependências transitivas de atributos não-chave.
+    \item atributos atômicos.
+    \item chaves candidatas.
+    \item tabelas com chave primária.
+\end{enumerate}
+
+\item Considere:
+\[
+Funcionario(\text{cpf}, \text{nome}, \text{idDepto}, \text{nomeDepto})
+\]
+com:
+\[
+\text{cpf} \rightarrow \text{nome}, \text{idDepto}
+\]
+\[
+\text{idDepto} \rightarrow \text{nomeDepto}
+\]
+Qual problema aparece?
+
+\begin{enumerate}[label=\alph*)]
+    \item Dependência transitiva.
+    \item Ausência de dependência funcional.
+    \item Violação da 1FN por atributo multivalorado.
+    \item Chave composta redundante.
+\end{enumerate}
+
+\item A BCNF exige que, para toda dependência funcional não trivial $X \rightarrow Y$:
+
+\begin{enumerate}[label=\alph*)]
+    \item $X$ seja uma superchave.
+    \item $Y$ seja sempre uma chave primária.
+    \item $X$ e $Y$ sejam atributos nulos.
+    \item a relação tenha exatamente dois atributos.
+\end{enumerate}
+
+\item Sobre 3FN e BCNF, assinale a alternativa correta:
+
+\begin{enumerate}[label=\alph*)]
+    \item Toda relação em 3FN está necessariamente em BCNF.
+    \item Toda relação em BCNF está em 3FN.
+    \item 3FN e BCNF são sempre equivalentes.
+    \item BCNF é menos restritiva que 3FN.
+\end{enumerate}
+
+\item O fechamento de um conjunto de atributos $X$, representado por $X^+$, corresponde:
+
+\begin{enumerate}[label=\alph*)]
+    \item ao conjunto de atributos que podem ser determinados por $X$.
+    \item ao conjunto de tabelas sem chave primária.
+    \item ao conjunto de valores \texttt{NULL} da relação.
+    \item ao conjunto de tuplas removidas de uma tabela.
+\end{enumerate}
+
+\item Considere:
+\[
+R(A,B,C,D)
+\]
+com:
+\[
+A \rightarrow B,\quad B \rightarrow C,\quad C \rightarrow D
+\]
+O fechamento $A^+$ é:
+
+\begin{enumerate}[label=\alph*)]
+    \item $\{A\}$
+    \item $\{A,B\}$
+    \item $\{A,B,C\}$
+    \item $\{A,B,C,D\}$
+\end{enumerate}
+
+\item Considere:
+\[
+R(A,B,C,D)
+\]
+com:
+\[
+AB \rightarrow C,\quad C \rightarrow D
+\]
+O fechamento $(AB)^+$ é:
+
+\begin{enumerate}[label=\alph*)]
+    \item $\{A,B\}$
+    \item $\{A,B,C\}$
+    \item $\{A,B,C,D\}$
+    \item $\{C,D\}$
+\end{enumerate}
+
+\item Uma cobertura mínima de dependências funcionais busca:
+
+\begin{enumerate}[label=\alph*)]
+    \item criar dependências redundantes.
+    \item obter um conjunto equivalente de dependências sem redundâncias.
+    \item eliminar todas as dependências funcionais.
+    \item substituir todas as chaves primárias por valores nulos.
+\end{enumerate}
+
+\item No cálculo da cobertura mínima, uma etapa comum é transformar:
+
+\[
+A \rightarrow BC
+\]
+
+em:
+
+\begin{enumerate}[label=\alph*)]
+    \item $AB \rightarrow C$
+    \item $A \rightarrow B$ e $A \rightarrow C$
+    \item $B \rightarrow A$ e $C \rightarrow A$
+    \item $BC \rightarrow A$
+\end{enumerate}
+
+\item Considere:
+\[
+F = \{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow C\}
+\]
+A dependência $A \rightarrow C$ é:
+
+\begin{enumerate}[label=\alph*)]
+    \item indispensável, pois não pode ser inferida.
+    \item redundante, pois pode ser inferida por transitividade.
+    \item inválida, pois $C$ não pode depender de $A$.
+    \item uma chave primária.
+\end{enumerate}
+
+\item Considere:
+\[
+F = \{AB \rightarrow C,\ A \rightarrow C\}
+\]
+O atributo $B$ em $AB \rightarrow C$ é:
+
+\begin{enumerate}[label=\alph*)]
+    \item necessário.
+    \item redundante.
+    \item uma chave estrangeira.
+    \item um atributo multivalorado.
+\end{enumerate}
+
+\item A normalização depende das regras do minimundo porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item as dependências funcionais são determinadas pelo significado dos dados.
+    \item toda tabela possui automaticamente as mesmas dependências.
+    \item SQL não permite dependências funcionais.
+    \item o minimundo elimina a necessidade de chaves.
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Questões de Verdadeiro ou Falso}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Redundância pode causar anomalias de atualização.
+    \item ( \quad ) Uma relação com muitos valores \texttt{NULL} pode indicar problema de projeto.
+    \item ( \quad ) A normalização busca misturar todos os conceitos em uma única tabela.
+    \item ( \quad ) Boa semântica significa que os atributos agrupados possuem sentido conjunto.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Em $X \rightarrow Y$, dizemos que $Y$ depende funcionalmente de $X$.
+    \item ( \quad ) Em $X \rightarrow Y$, valores iguais de $X$ exigem valores iguais de $Y$.
+    \item ( \quad ) Uma dependência funcional nunca depende das regras do minimundo.
+    \item ( \quad ) Dependências funcionais ajudam na análise da qualidade do esquema.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) A 1FN permite atributos multivalorados em uma única célula.
+    \item ( \quad ) A 2FN trata de dependências parciais.
+    \item ( \quad ) A 3FN trata de dependências transitivas.
+    \item ( \quad ) BCNF é mais restritiva que 3FN.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Dependência parcial só faz sentido quando há chave composta.
+    \item ( \quad ) Dependência transitiva envolve uma dependência indireta.
+    \item ( \quad ) Toda relação em BCNF também está em 3FN.
+    \item ( \quad ) Toda relação em 3FN também está obrigatoriamente em BCNF.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Em uma cobertura mínima, busca-se remover redundâncias.
+    \item ( \quad ) $A \rightarrow BC$ pode ser separado em $A \rightarrow B$ e $A \rightarrow C$.
+    \item ( \quad ) Uma dependência inferida por outras pode ser removida em uma cobertura mínima.
+    \item ( \quad ) Cobertura mínima significa eliminar todas as dependências funcionais.
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Questões de Aplicação Objetiva}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Considere:
+\[
+R(A,B,C)
+\]
+com:
+\[
+A \rightarrow B,\quad B \rightarrow C
+\]
+Se $A$ é chave, qual é o principal problema?
+
+\begin{enumerate}[label=\alph*)]
+    \item Dependência transitiva de $C$ em relação a $A$ por meio de $B$.
+    \item Atributo multivalorado.
+    \item Ausência de qualquer dependência funcional.
+    \item Chave composta parcial.
+\end{enumerate}
+
+\item Considere:
+\[
+R(A,B,C,D)
+\]
+com chave composta $(A,B)$ e dependência:
+\[
+A \rightarrow C
+\]
+Qual forma normal é violada?
+
+\begin{enumerate}[label=\alph*)]
+    \item 1FN.
+    \item 2FN.
+    \item 3FN apenas.
+    \item BCNF apenas.
+\end{enumerate}
+
+\item Considere:
+\[
+Pedido(\text{idPedido}, \text{idCliente}, \text{nomeCliente}, \text{dataPedido})
+\]
+com:
+\[
+\text{idPedido} \rightarrow \text{idCliente}, \text{dataPedido}
+\]
+\[
+\text{idCliente} \rightarrow \text{nomeCliente}
+\]
+Qual decomposição é mais adequada?
+
+\begin{enumerate}[label=\alph*)]
+    \item $Pedido(\text{idPedido}, \text{idCliente}, \text{dataPedido})$ e $Cliente(\text{idCliente}, \text{nomeCliente})$.
+    \item $Pedido(\text{nomeCliente}, \text{dataPedido})$ apenas.
+    \item $Cliente(\text{idPedido}, \text{dataPedido})$ apenas.
+    \item $Pedido(\text{idCliente})$ apenas.
+\end{enumerate}
+
+\item Considere:
+\[
+R(A,B,C)
+\]
+com:
+\[
+A \rightarrow B,\quad B \rightarrow A,\quad B \rightarrow C
+\]
+Quais atributos são chaves candidatas?
+
+\begin{enumerate}[label=\alph*)]
+    \item Apenas $A$.
+    \item Apenas $B$.
+    \item $A$ e $B$.
+    \item Apenas $C$.
+\end{enumerate}
+
+\item Considere:
+\[
+R(A,B,C)
+\]
+com:
+\[
+A \rightarrow B,\quad B \rightarrow C
+\]
+Qual decomposição reduz a dependência transitiva?
+
+\begin{enumerate}[label=\alph*)]
+    \item $R_1(A,B)$ e $R_2(B,C)$.
+    \item $R_1(A,C)$ apenas.
+    \item $R_1(B)$ e $R_2(C)$ apenas.
+    \item $R_1(A,B,C)$, sem alteração.
+\end{enumerate}
+
+\item Considere a relação:
+\[
+R(A,B,C,D)
+\]
+e as dependências funcionais:
+\[
+A \rightarrow B,\quad B \rightarrow C,\quad A \rightarrow D
+\]
+Qual é o fechamento de $A$?
+
+\begin{enumerate}[label=\alph*)]
+    \item $\{A,B,C,D\}$.
+    \item $\{A,B,D\}$.
+    \item $\{A,C\}$.
+    \item $\{B,C,D\}$.
+\end{enumerate}
+
+\item Considere:
+\[
+R(A,B,C,D)
+\]
+com dependências:
+\[
+AB \rightarrow C,\quad C \rightarrow D
+\]
+Qual conjunto é chave candidata de $R$?
+
+\begin{enumerate}[label=\alph*)]
+    \item $AB$.
+    \item $C$.
+    \item $AD$.
+    \item $BD$.
+\end{enumerate}
+
+\item Considere:
+\[
+R(A,B,C)
+\]
+com dependências:
+\[
+A \rightarrow B,\quad B \rightarrow C
+\]
+Qual afirmação é correta?
+
+\begin{enumerate}[label=\alph*)]
+    \item $A \rightarrow C$ pode ser inferida por transitividade.
+    \item $C \rightarrow A$ pode ser inferida por transitividade.
+    \item $B \rightarrow A$ sempre vale.
+    \item Nenhuma dependência pode ser inferida.
+\end{enumerate}
+
+\item Considere a tabela:
+\[
+\begin{array}{|c|c|c|c|}
+\hline
+\text{idAluno} & \text{nomeAluno} & \text{idCurso} & \text{nomeCurso}\\
+\hline
+1 & \text{Ana} & 10 & \text{BTI}\\
+2 & \text{Bruno} & 10 & \text{BTI}\\
+3 & \text{Carla} & 20 & \text{Computacao}\\
+\hline
+\end{array}
+\]
+Qual dependência funcional explica a repetição de \texttt{nomeCurso}?
+
+\begin{enumerate}[label=\alph*)]
+    \item $\text{idCurso} \rightarrow \text{nomeCurso}$.
+    \item $\text{nomeAluno} \rightarrow \text{idCurso}$.
+    \item $\text{nomeCurso} \rightarrow \text{idAluno}$.
+    \item $\text{idAluno} \rightarrow \text{nomeCurso}$ sempre indica redundância.
+\end{enumerate}
+
+\item Na tabela da questão anterior, se removermos o último aluno do curso Computacao e perdermos também a informação de que o curso 20 existe, ocorre:
+
+\begin{enumerate}[label=\alph*)]
+    \item anomalia de remoção.
+    \item anomalia de atualização apenas.
+    \item violação automática da 1FN.
+    \item produto cartesiano.
+\end{enumerate}
+
+\item Considere:
+\[
+Matricula(\text{idAluno}, \text{idDisciplina}, \text{nomeAluno}, \text{nomeDisciplina}, \text{nota})
+\]
+com chave composta $(\text{idAluno}, \text{idDisciplina})$ e:
+\[
+\text{idAluno} \rightarrow \text{nomeAluno}
+\]
+\[
+\text{idDisciplina} \rightarrow \text{nomeDisciplina}
+\]
+Qual forma normal é violada?
+
+\begin{enumerate}[label=\alph*)]
+    \item 2FN, por dependências parciais.
+    \item 1FN, pois há grupos repetidos.
+    \item BCNF apenas, sem violar 2FN.
+    \item Nenhuma, pois toda chave composta está normalizada.
+\end{enumerate}
+
+\item Para a relação da questão anterior, qual decomposição é mais adequada?
+
+\begin{enumerate}[label=\alph*)]
+    \item $Aluno(\text{idAluno}, \text{nomeAluno})$, $Disciplina(\text{idDisciplina}, \text{nomeDisciplina})$ e $Matricula(\text{idAluno}, \text{idDisciplina}, \text{nota})$.
+    \item $Matricula(\text{idAluno}, \text{nomeAluno})$ apenas.
+    \item $Disciplina(\text{idAluno}, \text{nota})$ apenas.
+    \item $Aluno(\text{idDisciplina}, \text{nomeDisciplina}, \text{nota})$ apenas.
+\end{enumerate}
+
+\item Considere:
+\[
+R(A,B,C)
+\]
+decomposta em:
+\[
+R_1(A,B)\quad \text{e}\quad R_2(A,C)
+\]
+Se $A \rightarrow B$ e $A \rightarrow C$, qual atributo comum permite uma junção sem perdas?
+
+\begin{enumerate}[label=\alph*)]
+    \item $A$.
+    \item $B$.
+    \item $C$.
+    \item Nenhum atributo é comum.
+\end{enumerate}
+
+\item Considere:
+\[
+R(A,B,C)
+\]
+com:
+\[
+A \rightarrow B,\quad B \rightarrow C
+\]
+e decomposição:
+\[
+R_1(A,B),\quad R_2(B,C)
+\]
+Qual dependência fica preservada diretamente em $R_2$?
+
+\begin{enumerate}[label=\alph*)]
+    \item $B \rightarrow C$.
+    \item $A \rightarrow C$.
+    \item $C \rightarrow A$.
+    \item $AB \rightarrow C$ apenas.
+\end{enumerate}
+
+\item Considere o conjunto:
+\[
+F=\{A \rightarrow BC,\ B \rightarrow C,\ A \rightarrow B,\ AB \rightarrow C\}
+\]
+Qual dependência é redundante porque pode ser obtida a partir de $A \rightarrow B$ e $B \rightarrow C$?
+
+\begin{enumerate}[label=\alph*)]
+    \item $A \rightarrow C$.
+    \item $C \rightarrow B$.
+    \item $B \rightarrow A$.
+    \item $C \rightarrow A$.
+\end{enumerate}
+
+\item Considere:
+\[
+R(A,B,C)
+\]
+com:
+\[
+A \rightarrow B,\quad B \rightarrow C
+\]
+Assumindo que $A$ é chave e $B$ não é chave, a relação viola BCNF porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item existe $B \rightarrow C$ e $B$ não é superchave.
+    \item toda relação com três atributos viola BCNF.
+    \item $A \rightarrow B$ possui determinante chave.
+    \item BCNF proíbe qualquer dependência funcional.
+\end{enumerate}
+
+\item Considere:
+\[
+R(A,B,C)
+\]
+com:
+\[
+A \rightarrow B,\quad C \rightarrow B
+\]
+Qual alternativa é necessariamente chave candidata?
+
+\begin{enumerate}[label=\alph*)]
+    \item $AC$.
+    \item $A$.
+    \item $C$.
+    \item $B$.
+\end{enumerate}
+
+
+\end{enumerate}
+
+\newpage
+
+\section*{Gabarito}
+
+\begin{multicols}{2}
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+    \item b
+    \item b
+    \item b
+    \item a
+    \item a
+    \item a
+    \item a
+    \item b
+    \item b
+    \item a
+    \item b
+    \item b
+    \item b
+    \item b
+    \item a
+    \item a
+    \item a
+    \item c
+    \item a
+    \item a
+    \item a
+    \item b
+    \item a
+    \item d
+    \item c
+    \item b
+    \item b
+    \item b
+    \item b
+    \item a
+    \item V, V, F, V
+    \item V, V, F, V
+    \item F, V, V, V
+    \item V, V, V, F
+    \item V, V, V, F
+    \item a
+    \item b
+    \item a
+    \item c
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+\end{enumerate}
+\end{multicols}
+
+\end{document}

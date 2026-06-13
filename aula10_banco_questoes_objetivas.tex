@@ -1,0 +1,1092 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{multicol}
+
+\geometry{margin=2.3cm}
+
+\title{Banco de Questões Objetivas -- Aula 10\\SQL}
+\author{Banco de Dados}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Instruções}
+
+Este banco contém questões objetivas sobre os principais tópicos da Aula 10:
+\begin{itemize}
+    \item SQL como linguagem declarativa;
+    \item SQL padrão e portabilidade entre SGBDs;
+    \item DDL, DML e VDL;
+    \item criação de esquemas e tabelas;
+    \item tipos de dados;
+    \item restrições de integridade;
+    \item consultas com \texttt{SELECT}, \texttt{FROM} e \texttt{WHERE};
+    \item uso de \texttt{DISTINCT};
+    \item junções;
+    \item consultas aninhadas;
+    \item funções agregadas;
+    \item \texttt{GROUP BY} e \texttt{HAVING};
+    \item comandos \texttt{INSERT}, \texttt{DELETE} e \texttt{UPDATE}.
+\end{itemize}
+
+\section{Questões de Múltipla Escolha}
+
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+
+\item SQL significa:
+
+\begin{enumerate}[label=\alph*)]
+    \item Structured Query Language.
+    \item Simple Query Logic.
+    \item System Query Level.
+    \item Sequential Query Language.
+\end{enumerate}
+
+\item SQL é considerada uma linguagem declarativa porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item o usuário especifica passo a passo como o SGBD deve executar a consulta.
+    \item o usuário especifica o resultado desejado, e o SGBD decide como executar.
+    \item ela só permite comandos de criação de tabela.
+    \item ela não permite restrições de integridade.
+\end{enumerate}
+
+\item Uma vantagem de manter-se próximo ao SQL padrão é:
+
+\begin{enumerate}[label=\alph*)]
+    \item impedir a migração entre SGBDs.
+    \item facilitar migrações entre SGBDs diferentes.
+    \item eliminar a necessidade de chaves primárias.
+    \item proibir consultas com \texttt{JOIN}.
+\end{enumerate}
+
+\item A sigla DDL refere-se a comandos de:
+
+\begin{enumerate}[label=\alph*)]
+    \item definição de dados.
+    \item manipulação de dados.
+    \item definição de visões apenas.
+    \item controle de concorrência apenas.
+\end{enumerate}
+
+\item A sigla DML refere-se principalmente a comandos de:
+
+\begin{enumerate}[label=\alph*)]
+    \item definição de tabelas e esquemas.
+    \item consulta, inserção, remoção e atualização de dados.
+    \item criação de usuários do sistema operacional.
+    \item definição exclusiva de visões.
+\end{enumerate}
+
+\item A sigla VDL está relacionada à:
+
+\begin{enumerate}[label=\alph*)]
+    \item definição de visões.
+    \item remoção de bancos de dados.
+    \item atualização de tuplas.
+    \item criação de índices físicos obrigatórios.
+\end{enumerate}
+
+\item No vocabulário de SQL, uma relação do modelo relacional corresponde a:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma tabela.
+    \item uma tupla.
+    \item uma coluna.
+    \item uma restrição.
+\end{enumerate}
+
+\item No vocabulário de SQL, uma tupla corresponde a:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma tabela.
+    \item uma linha.
+    \item uma coluna.
+    \item um domínio.
+\end{enumerate}
+
+\item No vocabulário de SQL, um atributo corresponde a:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma tabela.
+    \item uma linha.
+    \item uma coluna.
+    \item um esquema inteiro.
+\end{enumerate}
+
+\item O comando \texttt{CREATE} pode ser usado para criar:
+
+\begin{enumerate}[label=\alph*)]
+    \item apenas linhas em uma tabela.
+    \item esquemas, tabelas, domínios, visões, asserções e triggers.
+    \item apenas consultas temporárias.
+    \item apenas usuários do sistema operacional.
+\end{enumerate}
+
+\item Um esquema SQL é:
+
+\begin{enumerate}[label=\alph*)]
+    \item um agrupamento de elementos como tabelas, restrições, visões e domínios.
+    \item uma linha específica de uma tabela.
+    \item sempre uma chave primária.
+    \item um comando usado apenas para apagar dados.
+\end{enumerate}
+
+\item A estrutura básica de uma consulta SQL é:
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{SELECT-FROM-WHERE}.
+    \item \texttt{CREATE-FROM-WHERE}.
+    \item \texttt{INSERT-GROUP-HAVING}.
+    \item \texttt{DROP-SELECT-TABLE}.
+\end{enumerate}
+
+\item Na consulta SQL, a cláusula \texttt{SELECT} indica:
+
+\begin{enumerate}[label=\alph*)]
+    \item as tabelas utilizadas na consulta.
+    \item os atributos ou expressões que aparecerão no resultado.
+    \item a condição de filtragem das linhas.
+    \item a ordem física das tabelas no disco.
+\end{enumerate}
+
+\item Na consulta SQL, a cláusula \texttt{FROM} indica:
+
+\begin{enumerate}[label=\alph*)]
+    \item as tabelas envolvidas na consulta.
+    \item os atributos projetados no resultado.
+    \item os valores a serem atualizados.
+    \item os grupos a serem removidos.
+\end{enumerate}
+
+\item Na consulta SQL, a cláusula \texttt{WHERE} indica:
+
+\begin{enumerate}[label=\alph*)]
+    \item a condição usada para selecionar as tuplas.
+    \item a criação de uma nova tabela.
+    \item a definição de uma chave primária.
+    \item a ordem final de apresentação.
+\end{enumerate}
+
+\item Se uma consulta possui várias tabelas no \texttt{FROM} e não possui condição de junção no \texttt{WHERE}, o resultado tende a ser:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma chave primária.
+    \item um produto cartesiano.
+    \item uma visão materializada.
+    \item uma restrição de domínio.
+\end{enumerate}
+
+\item O operador \texttt{*} em uma consulta como:
+
+\[
+\texttt{SELECT * FROM Aluno;}
+\]
+
+significa:
+
+\begin{enumerate}[label=\alph*)]
+    \item retornar todos os atributos das tuplas selecionadas.
+    \item retornar apenas a chave primária.
+    \item remover todas as tuplas.
+    \item criar uma nova tabela.
+\end{enumerate}
+
+\item Em SQL, por padrão, o resultado de uma consulta pode conter tuplas duplicadas. Para removê-las, usa-se:
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{UNIQUE TABLE}.
+    \item \texttt{DISTINCT}.
+    \item \texttt{PRIMARY}.
+    \item \texttt{REMOVE DUPLICATES}.
+\end{enumerate}
+
+\item A consulta:
+
+\[
+\texttt{SELECT DISTINCT curso FROM Aluno;}
+\]
+
+retorna:
+
+\begin{enumerate}[label=\alph*)]
+    \item todos os cursos, incluindo repetições.
+    \item apenas cursos distintos.
+    \item todas as colunas da tabela Aluno.
+    \item apenas alunos sem curso.
+\end{enumerate}
+
+\item A cláusula \texttt{ORDER BY} é usada para:
+
+\begin{enumerate}[label=\alph*)]
+    \item ordenar o resultado da consulta.
+    \item agrupar tuplas.
+    \item criar restrições de integridade.
+    \item eliminar uma tabela do banco.
+\end{enumerate}
+
+\item A cláusula \texttt{GROUP BY} é usada para:
+
+\begin{enumerate}[label=\alph*)]
+    \item agrupar tuplas com base em um ou mais atributos.
+    \item remover todas as linhas duplicadas obrigatoriamente.
+    \item criar uma chave estrangeira.
+    \item atualizar várias tabelas ao mesmo tempo.
+\end{enumerate}
+
+\item A cláusula \texttt{HAVING} é usada para:
+
+\begin{enumerate}[label=\alph*)]
+    \item filtrar grupos após o agrupamento.
+    \item filtrar linhas antes do agrupamento.
+    \item criar uma tabela.
+    \item definir um tipo de dado.
+\end{enumerate}
+
+\item A diferença principal entre \texttt{WHERE} e \texttt{HAVING} é:
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{WHERE} filtra tuplas; \texttt{HAVING} filtra grupos.
+    \item \texttt{WHERE} filtra grupos; \texttt{HAVING} cria tabelas.
+    \item ambas fazem exatamente a mesma coisa em qualquer contexto.
+    \item \texttt{HAVING} só pode ser usado com \texttt{INSERT}.
+\end{enumerate}
+
+\item Qual das opções abaixo contém apenas funções agregadas?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{COUNT}, \texttt{SUM}, \texttt{MAX}, \texttt{MIN}, \texttt{AVG}.
+    \item \texttt{SELECT}, \texttt{FROM}, \texttt{WHERE}.
+    \item \texttt{CREATE}, \texttt{DROP}, \texttt{ALTER}.
+    \item \texttt{INSERT}, \texttt{DELETE}, \texttt{UPDATE}.
+\end{enumerate}
+
+\item A função \texttt{COUNT(*)} retorna:
+
+\begin{enumerate}[label=\alph*)]
+    \item a soma dos valores de uma coluna.
+    \item o número de linhas selecionadas.
+    \item o maior valor de uma coluna.
+    \item a média dos valores de uma coluna.
+\end{enumerate}
+
+\item A função \texttt{AVG(salario)} retorna:
+
+\begin{enumerate}[label=\alph*)]
+    \item o maior salário.
+    \item o menor salário.
+    \item a média dos salários.
+    \item a quantidade de salários distintos.
+\end{enumerate}
+
+\item A função \texttt{SUM(salario)} retorna:
+
+\begin{enumerate}[label=\alph*)]
+    \item a soma dos salários.
+    \item a média dos salários.
+    \item o menor salário.
+    \item o número de tabelas do banco.
+\end{enumerate}
+
+\item A função \texttt{MAX(salario)} retorna:
+
+\begin{enumerate}[label=\alph*)]
+    \item o maior salário.
+    \item o menor salário.
+    \item a média dos salários.
+    \item a quantidade de salários.
+\end{enumerate}
+
+\item A função \texttt{MIN(salario)} retorna:
+
+\begin{enumerate}[label=\alph*)]
+    \item o maior salário.
+    \item o menor salário.
+    \item a média dos salários.
+    \item a soma dos salários.
+\end{enumerate}
+
+\item Considere a consulta:
+
+\[
+\texttt{SELECT curso, COUNT(*) FROM Aluno GROUP BY curso;}
+\]
+
+Ela retorna:
+
+\begin{enumerate}[label=\alph*)]
+    \item a quantidade de alunos por curso.
+    \item todos os alunos ordenados por matrícula.
+    \item todos os cursos sem contagem.
+    \item apenas alunos com curso nulo.
+\end{enumerate}
+
+\item Considere a consulta:
+
+\[
+\texttt{SELECT curso, COUNT(*) FROM Aluno GROUP BY curso HAVING COUNT(*) > 10;}
+\]
+
+Ela retorna:
+
+\begin{enumerate}[label=\alph*)]
+    \item todos os alunos com mais de 10 anos.
+    \item cursos com mais de 10 alunos.
+    \item alunos cujo nome tem mais de 10 letras.
+    \item todas as tabelas com mais de 10 colunas.
+\end{enumerate}
+
+\item O comando \texttt{INSERT} é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item inserir novas tuplas em uma tabela.
+    \item remover uma tabela inteira do catálogo.
+    \item alterar a estrutura de um esquema.
+    \item definir uma chave estrangeira.
+\end{enumerate}
+
+\item O comando \texttt{DELETE} é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item remover tuplas de uma tabela.
+    \item criar um novo esquema.
+    \item alterar o nome de uma coluna.
+    \item calcular médias.
+\end{enumerate}
+
+\item O comando \texttt{UPDATE} é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item modificar valores de atributos em tuplas existentes.
+    \item criar uma nova tabela.
+    \item apagar a definição da tabela.
+    \item criar uma visão.
+\end{enumerate}
+
+\item O que acontece em um comando \texttt{DELETE} sem cláusula \texttt{WHERE}?
+
+\begin{enumerate}[label=\alph*)]
+    \item Todas as tuplas da tabela são removidas.
+    \item A tabela é obrigatoriamente apagada do catálogo.
+    \item Apenas a primeira tupla é removida.
+    \item Nenhuma tupla pode ser removida.
+\end{enumerate}
+
+\item O que acontece em um comando \texttt{UPDATE} sem cláusula \texttt{WHERE}?
+
+\begin{enumerate}[label=\alph*)]
+    \item Todas as tuplas da tabela podem ser atualizadas.
+    \item Nenhuma tupla é atualizada.
+    \item A tabela é apagada.
+    \item Uma nova tabela é criada.
+\end{enumerate}
+
+\item O comando \texttt{DROP TABLE} é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item remover a definição da tabela do banco.
+    \item remover apenas uma linha da tabela.
+    \item atualizar todas as tuplas.
+    \item fazer uma junção entre duas tabelas.
+\end{enumerate}
+
+\item O comando \texttt{ALTER TABLE} é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item modificar a estrutura de uma tabela.
+    \item consultar todos os dados de uma tabela.
+    \item inserir uma nova linha.
+    \item ordenar o resultado de uma consulta.
+\end{enumerate}
+
+\item Uma chave primária em SQL serve para:
+
+\begin{enumerate}[label=\alph*)]
+    \item identificar unicamente as tuplas de uma tabela.
+    \item permitir valores duplicados obrigatoriamente.
+    \item armazenar apenas valores nulos.
+    \item impedir qualquer consulta na tabela.
+\end{enumerate}
+
+\item Uma chave estrangeira em SQL serve para:
+
+\begin{enumerate}[label=\alph*)]
+    \item representar uma referência a uma chave de outra tabela.
+    \item identificar sempre uma coluna multivalorada.
+    \item substituir a cláusula \texttt{WHERE}.
+    \item ordenar automaticamente todas as consultas.
+\end{enumerate}
+
+\item A restrição \texttt{NOT NULL} indica que:
+
+\begin{enumerate}[label=\alph*)]
+    \item o atributo não pode receber valor nulo.
+    \item o atributo deve ser sempre uma chave estrangeira.
+    \item a tabela não pode ter linhas.
+    \item o atributo não pode ser consultado.
+\end{enumerate}
+
+\item A restrição \texttt{UNIQUE} indica que:
+
+\begin{enumerate}[label=\alph*)]
+    \item os valores de um atributo ou conjunto de atributos não podem se repetir.
+    \item todos os valores devem ser nulos.
+    \item a tabela não pode ter chave primária.
+    \item a consulta deve retornar todos os atributos.
+\end{enumerate}
+
+\item A restrição \texttt{CHECK} é usada para:
+
+\begin{enumerate}[label=\alph*)]
+    \item definir uma condição que os valores devem satisfazer.
+    \item criar uma consulta aninhada obrigatória.
+    \item remover tuplas duplicadas do resultado.
+    \item apagar uma tabela do banco.
+\end{enumerate}
+
+\item Um \texttt{JOIN} é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item combinar tuplas de tabelas relacionadas.
+    \item apagar todos os dados de uma tabela.
+    \item criar uma chave primária automaticamente.
+    \item impedir o uso de agregação.
+\end{enumerate}
+
+\item Em uma junção entre \texttt{Aluno} e \texttt{Curso}, a condição:
+
+\[
+\texttt{Aluno.idCurso = Curso.idCurso}
+\]
+
+representa:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma condição de junção.
+    \item uma função agregada.
+    \item uma cláusula de agrupamento.
+    \item uma remoção de tabela.
+\end{enumerate}
+
+\item Uma consulta aninhada é:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma consulta dentro de outra consulta.
+    \item uma tabela sem chave primária.
+    \item uma restrição de domínio.
+    \item um comando exclusivo de remoção.
+\end{enumerate}
+
+\item O operador \texttt{IN} pode ser usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item verificar se um valor pertence a um conjunto de valores.
+    \item apagar uma tabela.
+    \item criar uma chave primária.
+    \item ordenar resultados.
+\end{enumerate}
+
+\item Uma visão em SQL pode ser entendida como:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma tabela virtual derivada de uma consulta.
+    \item uma tabela física obrigatória com dados duplicados.
+    \item uma chave estrangeira.
+    \item uma restrição de domínio.
+\end{enumerate}
+
+\item Uma trigger é, em geral:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma ação automática executada quando certos eventos ocorrem no banco.
+    \item uma coluna que nunca aceita valores nulos.
+    \item uma função agregada.
+    \item uma forma de ordenar tuplas.
+\end{enumerate}
+
+\item Uma asserção em SQL é usada para:
+
+\begin{enumerate}[label=\alph*)]
+    \item especificar restrições gerais sobre o banco.
+    \item inserir várias tuplas obrigatoriamente.
+    \item criar uma tabela temporária sempre.
+    \item executar uma consulta sem \texttt{FROM}.
+\end{enumerate}
+
+\item Em SQL, uma consulta pode conter, na forma mais completa apresentada, as cláusulas:
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{SELECT}, \texttt{FROM}, \texttt{WHERE}, \texttt{GROUP BY}, \texttt{HAVING}, \texttt{ORDER BY}.
+    \item \texttt{INSERT}, \texttt{DELETE}, \texttt{UPDATE}, \texttt{DROP}.
+    \item \texttt{CREATE}, \texttt{TABLE}, \texttt{COLUMN}, \texttt{ROW}.
+    \item \texttt{PRIMARY}, \texttt{FOREIGN}, \texttt{CHECK}, \texttt{UNIQUE}.
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Questões de Verdadeiro ou Falso}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) SQL é uma linguagem declarativa.
+    \item ( \quad ) SQL foi projetada no contexto do modelo relacional.
+    \item ( \quad ) SQL obriga o usuário a especificar o algoritmo físico de execução da consulta.
+    \item ( \quad ) SQL tornou-se uma linguagem padrão para bancos relacionais.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) DDL está relacionada à definição de dados.
+    \item ( \quad ) DML está relacionada a consultas e atualizações.
+    \item ( \quad ) VDL está relacionada à definição de visões.
+    \item ( \quad ) SQL não permite restrições de integridade.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Em SQL, relação corresponde a tabela.
+    \item ( \quad ) Em SQL, tupla corresponde a linha.
+    \item ( \quad ) Em SQL, atributo corresponde a coluna.
+    \item ( \quad ) Em SQL, tabela corresponde sempre a um banco inteiro.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) A cláusula \texttt{SELECT} indica os atributos ou expressões retornadas.
+    \item ( \quad ) A cláusula \texttt{FROM} indica as tabelas envolvidas.
+    \item ( \quad ) A cláusula \texttt{WHERE} indica condições de filtragem.
+    \item ( \quad ) A cláusula \texttt{WHERE} é usada para filtrar grupos após agregação.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) \texttt{COUNT}, \texttt{SUM}, \texttt{MAX}, \texttt{MIN} e \texttt{AVG} são funções agregadas.
+    \item ( \quad ) \texttt{GROUP BY} é usado para agrupar tuplas.
+    \item ( \quad ) \texttt{HAVING} é usado para filtrar grupos.
+    \item ( \quad ) \texttt{ORDER BY} é usado para criar tabelas.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) \texttt{INSERT} insere tuplas.
+    \item ( \quad ) \texttt{DELETE} remove tuplas.
+    \item ( \quad ) \texttt{UPDATE} altera valores de tuplas existentes.
+    \item ( \quad ) \texttt{DROP TABLE} remove apenas uma tupla da tabela.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Uma chave primária identifica unicamente tuplas.
+    \item ( \quad ) Uma chave estrangeira representa referência entre tabelas.
+    \item ( \quad ) \texttt{NOT NULL} permite obrigatoriamente valores nulos.
+    \item ( \quad ) \texttt{CHECK} pode definir uma condição sobre valores permitidos.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Um \texttt{JOIN} combina dados de tabelas relacionadas.
+    \item ( \quad ) Uma consulta aninhada é uma consulta dentro de outra.
+    \item ( \quad ) Uma visão pode ser entendida como uma tabela virtual.
+    \item ( \quad ) Uma trigger é uma função agregada.
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Questões de Aplicação Objetiva}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Considere a tabela:
+
+\[
+Aluno(\text{matricula}, \text{nome}, \text{curso})
+\]
+
+Qual consulta retorna o nome de todos os alunos do curso \texttt{'BTI'}?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{SELECT nome FROM Aluno WHERE curso = 'BTI';}
+    \item \texttt{FROM nome SELECT Aluno WHERE curso = 'BTI';}
+    \item \texttt{SELECT curso FROM nome WHERE Aluno = 'BTI';}
+    \item \texttt{DELETE nome FROM Aluno WHERE curso = 'BTI';}
+\end{enumerate}
+
+\item Considere:
+
+\[
+Aluno(\text{matricula}, \text{nome}, \text{idCurso})
+\]
+\[
+Curso(\text{idCurso}, \text{nomeCurso})
+\]
+
+Qual consulta retorna o nome do aluno e o nome do curso correspondente?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{SELECT Aluno.nome, Curso.nomeCurso FROM Aluno, Curso WHERE Aluno.idCurso = Curso.idCurso;}
+    \item \texttt{SELECT Aluno.nome, Curso.nomeCurso FROM Aluno, Curso;}
+    \item \texttt{DELETE FROM Aluno WHERE idCurso = Curso.idCurso;}
+    \item \texttt{UPDATE Aluno SET nomeCurso = Curso.nomeCurso;}
+\end{enumerate}
+
+\item Qual consulta retorna a quantidade de alunos por curso?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{SELECT curso, COUNT(*) FROM Aluno GROUP BY curso;}
+    \item \texttt{SELECT curso FROM Aluno WHERE COUNT(*) GROUP BY curso;}
+    \item \texttt{SELECT COUNT(curso) FROM Aluno WHERE GROUP BY curso;}
+    \item \texttt{DELETE curso, COUNT(*) FROM Aluno;}
+\end{enumerate}
+
+\item Qual consulta retorna apenas cursos com mais de 5 alunos?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{SELECT curso, COUNT(*) FROM Aluno GROUP BY curso HAVING COUNT(*) > 5;}
+    \item \texttt{SELECT curso, COUNT(*) FROM Aluno WHERE COUNT(*) > 5;}
+    \item \texttt{SELECT curso FROM Aluno HAVING curso > 5;}
+    \item \texttt{SELECT curso FROM Aluno GROUP BY COUNT(*) > 5;}
+\end{enumerate}
+
+\item Qual comando insere um aluno na tabela abaixo?
+
+\[
+Aluno(\text{matricula}, \text{nome}, \text{curso})
+\]
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{INSERT INTO Aluno VALUES (1, 'Ana', 'BTI');}
+    \item \texttt{DELETE INTO Aluno VALUES (1, 'Ana', 'BTI');}
+    \item \texttt{UPDATE INTO Aluno VALUES (1, 'Ana', 'BTI');}
+    \item \texttt{CREATE INTO Aluno VALUES (1, 'Ana', 'BTI');}
+\end{enumerate}
+
+\item Qual comando atualiza o curso do aluno de matrícula 10 para \texttt{'Computacao'}?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{UPDATE Aluno SET curso = 'Computacao' WHERE matricula = 10;}
+    \item \texttt{UPDATE Aluno WHERE curso = 'Computacao' SET matricula = 10;}
+    \item \texttt{DELETE Aluno SET curso = 'Computacao' WHERE matricula = 10;}
+    \item \texttt{INSERT Aluno SET curso = 'Computacao' WHERE matricula = 10;}
+\end{enumerate}
+
+\item Qual comando remove o aluno de matrícula 10?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{DELETE FROM Aluno WHERE matricula = 10;}
+    \item \texttt{DROP FROM Aluno WHERE matricula = 10;}
+    \item \texttt{UPDATE FROM Aluno WHERE matricula = 10;}
+    \item \texttt{REMOVE TABLE Aluno WHERE matricula = 10;}
+\end{enumerate}
+
+\item Qual comando cria uma tabela simples de aluno com matrícula como chave primária?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{CREATE TABLE Aluno (matricula INT PRIMARY KEY, nome VARCHAR(100));}
+    \item \texttt{CREATE Aluno TABLE matricula PRIMARY KEY, nome;}
+    \item \texttt{INSERT TABLE Aluno (matricula INT PRIMARY KEY, nome VARCHAR(100));}
+    \item \texttt{SELECT TABLE Aluno (matricula INT PRIMARY KEY, nome VARCHAR(100));}
+\end{enumerate}
+
+\item Considere a consulta:
+
+\[
+\texttt{SELECT nome FROM Aluno ORDER BY nome;}
+\]
+
+Ela retorna:
+
+\begin{enumerate}[label=\alph*)]
+    \item os nomes dos alunos ordenados por nome.
+    \item os nomes dos alunos agrupados por curso.
+    \item apenas alunos sem nome.
+    \item a quantidade de alunos por nome.
+\end{enumerate}
+
+\item Considere a consulta:
+
+\[
+\texttt{SELECT COUNT(DISTINCT curso) FROM Aluno;}
+\]
+
+Ela retorna:
+
+\begin{enumerate}[label=\alph*)]
+    \item a quantidade de cursos distintos presentes na tabela Aluno.
+    \item todos os alunos sem repetição.
+    \item a soma das matrículas.
+    \item a média de alunos por curso.
+\end{enumerate}
+
+\item Considere a tabela \texttt{Aluno}:
+\[
+\begin{array}{|c|c|c|}
+\hline
+\text{matricula} & \text{nome} & \text{curso}\\
+\hline
+1 & \text{Ana} & \text{BTI}\\
+2 & \text{Bruno} & \text{Computacao}\\
+3 & \text{Carla} & \text{BTI}\\
+\hline
+\end{array}
+\]
+Qual é o resultado da consulta abaixo?
+\[
+\texttt{SELECT nome FROM Aluno WHERE curso = 'BTI' ORDER BY nome;}
+\]
+
+\begin{enumerate}[label=\alph*)]
+    \item Ana e Carla.
+    \item Bruno apenas.
+    \item BTI e Computacao.
+    \item Nenhuma linha.
+\end{enumerate}
+
+\item Usando a tabela \texttt{Aluno} da questão anterior, qual é o resultado de:
+\[
+\texttt{SELECT COUNT(*) FROM Aluno WHERE curso = 'BTI';}
+\]
+
+\begin{enumerate}[label=\alph*)]
+    \item 1.
+    \item 2.
+    \item 3.
+    \item BTI.
+\end{enumerate}
+
+\item Considere as tabelas:
+\[
+Aluno(\text{matricula}, \text{nome}, \text{idCurso})
+\]
+\[
+Curso(\text{idCurso}, \text{nomeCurso})
+\]
+com os dados:
+\[
+\begin{array}{|c|c|c|}
+\hline
+\text{matricula} & \text{nome} & \text{idCurso}\\
+\hline
+1 & \text{Ana} & 10\\
+2 & \text{Bruno} & 20\\
+\hline
+\end{array}
+\quad
+\begin{array}{|c|c|}
+\hline
+\text{idCurso} & \text{nomeCurso}\\
+\hline
+10 & \text{BTI}\\
+20 & \text{Computacao}\\
+\hline
+\end{array}
+\]
+Qual consulta retorna \texttt{Ana, BTI} e \texttt{Bruno, Computacao}?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{SELECT A.nome, C.nomeCurso FROM Aluno A, Curso C WHERE A.idCurso = C.idCurso;}
+    \item \texttt{SELECT A.nome, C.nomeCurso FROM Aluno A, Curso C;}
+    \item \texttt{SELECT nome, nomeCurso FROM Aluno WHERE idCurso = nomeCurso;}
+    \item \texttt{DELETE FROM Curso WHERE idCurso = idCurso;}
+\end{enumerate}
+
+\item Considere a tabela \texttt{Matricula}:
+\[
+\begin{array}{|c|c|c|}
+\hline
+\text{idAluno} & \text{disciplina} & \text{nota}\\
+\hline
+1 & \text{BD} & 8.0\\
+2 & \text{BD} & 7.0\\
+3 & \text{PDS} & 9.0\\
+\hline
+\end{array}
+\]
+Qual consulta retorna apenas disciplinas com mais de um aluno matriculado?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{SELECT disciplina FROM Matricula WHERE COUNT(*) > 1;}
+    \item \texttt{SELECT disciplina FROM Matricula GROUP BY COUNT(*) HAVING disciplina > 1;}
+    \item \texttt{SELECT disciplina FROM Matricula GROUP BY disciplina HAVING COUNT(*) > 1;}
+    \item \texttt{SELECT disciplina FROM Matricula HAVING nota > 1;}
+\end{enumerate}
+
+\item Considere:
+\[
+Aluno(\text{matricula}, \text{nome}, \text{idCurso})
+\]
+\[
+Curso(\text{idCurso}, \text{nomeCurso}, \text{centro})
+\]
+Qual consulta retorna os nomes dos alunos de cursos do centro \texttt{'CT'}?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{SELECT nome FROM Aluno WHERE centro = 'CT';}
+    \item \texttt{SELECT nome FROM Aluno WHERE idCurso IN (SELECT idCurso FROM Curso WHERE centro = 'CT');}
+    \item \texttt{SELECT nomeCurso FROM Curso WHERE nome IN Aluno;}
+    \item \texttt{SELECT centro FROM Aluno GROUP BY nome;}
+\end{enumerate}
+
+\item A consulta abaixo está incorreta em SQL padrão:
+\[
+\texttt{SELECT curso, COUNT(*) FROM Aluno WHERE COUNT(*) > 5 GROUP BY curso;}
+\]
+Qual é o principal erro?
+
+\begin{enumerate}[label=\alph*)]
+    \item Condições sobre agregações devem ser colocadas em \texttt{HAVING}, não em \texttt{WHERE}.
+    \item \texttt{COUNT(*)} nunca pode ser usado com \texttt{GROUP BY}.
+    \item \texttt{WHERE} só pode aparecer depois de \texttt{GROUP BY}.
+    \item A consulta deveria usar \texttt{DELETE}.
+\end{enumerate}
+
+\item Se \texttt{Aluno} possui 3 linhas e \texttt{Curso} possui 2 linhas, a consulta abaixo retorna quantas combinações, assumindo ausência de filtro?
+\[
+\texttt{SELECT * FROM Aluno, Curso;}
+\]
+
+\begin{enumerate}[label=\alph*)]
+    \item 2.
+    \item 3.
+    \item 5.
+    \item 6.
+\end{enumerate}
+
+\item Considere o comando:
+\[
+\texttt{UPDATE Aluno SET curso = 'BTI';}
+\]
+Sem cláusula \texttt{WHERE}, o comando:
+
+\begin{enumerate}[label=\alph*)]
+    \item atualiza apenas a primeira tupla.
+    \item gera sempre erro de sintaxe.
+    \item atualiza todas as tuplas da tabela \texttt{Aluno}.
+    \item remove todas as tuplas da tabela \texttt{Aluno}.
+\end{enumerate}
+
+\item Considere que \texttt{Aluno.idCurso} é chave estrangeira referenciando \texttt{Curso.idCurso}. Se tentarmos inserir um aluno com \texttt{idCurso = 99}, mas não existe curso 99, o que ocorre?
+
+\begin{enumerate}[label=\alph*)]
+    \item A inserção sempre é aceita.
+    \item Há violação de integridade referencial.
+    \item O SGBD cria automaticamente o curso 99.
+    \item A chave estrangeira vira chave primária.
+\end{enumerate}
+
+\item Se \texttt{Aluno.matricula} é chave primária e já existe uma tupla com \texttt{matricula = 1}, inserir outra tupla com \texttt{matricula = 1} causa:
+
+\begin{enumerate}[label=\alph*)]
+    \item violação de chave primária.
+    \item criação automática de nova tabela.
+    \item ordenação dos dados.
+    \item remoção da tupla antiga obrigatoriamente.
+\end{enumerate}
+
+\item Qual comando cria a tabela \texttt{Aluno} com chave estrangeira para \texttt{Curso}?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{CREATE TABLE Aluno (matricula INT PRIMARY KEY, nome VARCHAR(100), idCurso INT, FOREIGN KEY (idCurso) REFERENCES Curso(idCurso));}
+    \item \texttt{CREATE TABLE Aluno FOREIGN KEY idCurso Curso;}
+    \item \texttt{INSERT TABLE Aluno REFERENCES Curso(idCurso);}
+    \item \texttt{SELECT FOREIGN KEY FROM Aluno TO Curso;}
+\end{enumerate}
+
+\item Se uma chave estrangeira de \texttt{Aluno} referencia \texttt{Curso} e não há ação de cascata configurada, tentar apagar um curso ainda referenciado por alunos normalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item apaga automaticamente todos os alunos em qualquer SGBD.
+    \item é impedido por restrição de integridade referencial.
+    \item transforma alunos em valores \texttt{NULL} obrigatoriamente.
+    \item converte a tabela em visão.
+\end{enumerate}
+
+\item Considere:
+\[
+\texttt{SELECT nome FROM Aluno WHERE curso IS NULL;}
+\]
+Essa consulta retorna:
+
+\begin{enumerate}[label=\alph*)]
+    \item alunos cujo curso é diferente de \texttt{NULL}.
+    \item todos os alunos, pois \texttt{NULL} é ignorado.
+    \item alunos cujo curso está ausente ou desconhecido.
+    \item erro, pois \texttt{IS NULL} não existe em SQL.
+\end{enumerate}
+
+\item Considere a tabela \texttt{Aluno}:
+\[
+\begin{array}{|c|c|}
+\hline
+\text{nome} & \text{nota}\\
+\hline
+Ana & 8.0\\
+Bruno & 9.5\\
+Carla & 7.0\\
+\hline
+\end{array}
+\]
+Qual aluno aparece primeiro no resultado?
+\[
+\texttt{SELECT nome FROM Aluno ORDER BY nota DESC;}
+\]
+
+\begin{enumerate}[label=\alph*)]
+    \item Bruno.
+    \item Ana.
+    \item Carla.
+    \item O resultado não pode ser ordenado por nota.
+\end{enumerate}
+
+\item Qual consulta retorna alunos que não possuem matrícula em nenhuma disciplina, considerando:
+\[
+Aluno(\text{matricula}, \text{nome})
+\]
+\[
+Matricula(\text{matricula}, \text{disciplina})
+\]
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{SELECT nome FROM Aluno WHERE matricula NOT IN (SELECT matricula FROM Matricula);}
+    \item \texttt{SELECT nome FROM Aluno WHERE COUNT(*) = 0;}
+    \item \texttt{SELECT nome FROM Matricula WHERE disciplina IS NULL;}
+    \item \texttt{DELETE FROM Aluno WHERE matricula IN Matricula;}
+\end{enumerate}
+
+\item Considere:
+\[
+\texttt{SELECT curso, AVG(nota) FROM Aluno GROUP BY curso;}
+\]
+Essa consulta retorna:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma média de nota para cada curso.
+    \item uma única média geral da tabela inteira, sem cursos.
+    \item todas as notas individuais, sem agregação.
+    \item uma nova tabela física chamada curso.
+\end{enumerate}
+
+\item Qual alternativa representa corretamente uma consulta com junção explícita?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{SELECT A.nome, C.nomeCurso FROM Aluno A JOIN Curso C ON A.idCurso = C.idCurso;}
+    \item \texttt{SELECT A.nome JOIN C.nomeCurso FROM Aluno ON Curso;}
+    \item \texttt{JOIN Aluno, Curso SELECT nome;}
+    \item \texttt{SELECT nome FROM Aluno WHERE JOIN Curso;}
+\end{enumerate}
+
+
+\end{enumerate}
+
+\newpage
+
+\section*{Gabarito}
+
+\begin{multicols}{2}
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+    \item a
+    \item b
+    \item b
+    \item a
+    \item b
+    \item a
+    \item a
+    \item b
+    \item c
+    \item b
+    \item a
+    \item a
+    \item b
+    \item a
+    \item a
+    \item b
+    \item a
+    \item b
+    \item b
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item b
+    \item c
+    \item a
+    \item a
+    \item b
+    \item a
+    \item b
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item V, V, F, V
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, F, V
+    \item V, V, V, F
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item b
+    \item a
+    \item c
+    \item b
+    \item a
+    \item d
+    \item c
+    \item b
+    \item a
+    \item a
+    \item b
+    \item c
+    \item a
+    \item a
+    \item a
+\end{enumerate}
+\end{multicols}
+
+\end{document}

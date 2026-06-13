@@ -1,0 +1,1291 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{multicol}
+
+\geometry{margin=2.3cm}
+
+\title{Banco de Questões Objetivas -- Aula 11\\Técnicas de Programação SQL}
+\author{Banco de Dados}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Instruções}
+
+Este banco contém questões objetivas sobre os principais tópicos da Aula 11:
+\begin{itemize}
+    \item programação para banco de dados;
+    \item linguagem hospedeira e sublinguagem de dados;
+    \item descompasso de impedância;
+    \item SQL embutido;
+    \item cursores;
+    \item SQL dinâmica;
+    \item SQLJ;
+    \item JDBC;
+    \item Hibernate;
+    \item SQL/CLI;
+    \item procedimentos e funções armazenadas;
+    \item SQL/PSM;
+    \item SQL Injection;
+    \item dados criptografados.
+\end{itemize}
+
+\section{Questões de Múltipla Escolha}
+
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+
+\item Em aplicações reais, a maioria das interações com bancos de dados ocorre por meio de:
+
+\begin{enumerate}[label=\alph*)]
+    \item programas de aplicação cuidadosamente projetados e testados.
+    \item digitação manual de comandos pelo administrador.
+    \item arquivos de texto sem conexão com SGBD.
+    \item consultas feitas apenas por planilhas.
+\end{enumerate}
+
+\item A interface interativa de um SGBD é conveniente principalmente para:
+
+\begin{enumerate}[label=\alph*)]
+    \item criação de esquema, criação de restrições e consultas ad-hoc.
+    \item processamento automático de todas as aplicações web.
+    \item substituição completa de programas de aplicação.
+    \item eliminação de conexões com o servidor.
+\end{enumerate}
+
+\item Em programação de banco de dados, a linguagem hospedeira é:
+
+\begin{enumerate}[label=\alph*)]
+    \item a linguagem de programação geral usada pela aplicação, como Java, C ou C++.
+    \item sempre a linguagem SQL.
+    \item o nome físico da tabela no disco.
+    \item uma restrição de integridade.
+\end{enumerate}
+
+\item Em programação de banco de dados, a sublinguagem de dados geralmente é:
+
+\begin{enumerate}[label=\alph*)]
+    \item SQL.
+    \item HTML.
+    \item CSS.
+    \item Assembly.
+\end{enumerate}
+
+\item Uma das abordagens para programação de BD é:
+
+\begin{enumerate}[label=\alph*)]
+    \item comandos de BD embutidos em uma linguagem de programação.
+    \item ausência total de linguagem hospedeira.
+    \item uso exclusivo de arquivos PDF.
+    \item proibição de bibliotecas de acesso.
+\end{enumerate}
+
+\item A abordagem baseada em biblioteca de funções de BD consiste em:
+
+\begin{enumerate}[label=\alph*)]
+    \item disponibilizar uma API para chamadas ao banco a partir da linguagem hospedeira.
+    \item colocar SQL dentro de imagens.
+    \item impedir conexão com vários bancos.
+    \item substituir todas as tabelas por arquivos texto.
+\end{enumerate}
+
+\item Uma linguagem completamente nova para BD é ideal principalmente quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item a aplicação possui interação intensiva com o banco de dados.
+    \item não existe banco de dados.
+    \item deseja-se evitar qualquer acesso ao SGBD.
+    \item o banco deve ser usado apenas manualmente.
+\end{enumerate}
+
+\item O descompasso de impedância ocorre por causa da:
+
+\begin{enumerate}[label=\alph*)]
+    \item incompatibilidade entre o modelo da linguagem hospedeira e o modelo do banco.
+    \item igualdade perfeita entre Java e SQL.
+    \item inexistência de tipos de dados no banco.
+    \item impossibilidade de usar cursores.
+\end{enumerate}
+
+\item Um exemplo de descompasso de impedância é:
+
+\begin{enumerate}[label=\alph*)]
+    \item diferenças entre tipos de dados da linguagem hospedeira e do BD.
+    \item uma tabela possuir chave primária.
+    \item uma consulta ter \texttt{WHERE}.
+    \item o banco possuir apenas uma tabela.
+\end{enumerate}
+
+\item Resultados de consultas SQL geralmente são:
+
+\begin{enumerate}[label=\alph*)]
+    \item bags de tuplas, isto é, sequências de valores de atributos.
+    \item sempre um único número inteiro.
+    \item arquivos executáveis.
+    \item classes Java obrigatoriamente.
+\end{enumerate}
+
+\item Para processar múltiplas tuplas retornadas por uma consulta em uma linguagem hospedeira, normalmente usa-se:
+
+\begin{enumerate}[label=\alph*)]
+    \item cursor ou iterador.
+    \item comando \texttt{DROP}.
+    \item chave estrangeira.
+    \item criptografia MD5 obrigatória.
+\end{enumerate}
+
+\item A interação básica de um programa cliente com o BD segue a ordem:
+
+\begin{enumerate}[label=\alph*)]
+    \item abrir conexão, submeter comandos, fechar conexão.
+    \item fechar conexão, submeter comandos, abrir conexão.
+    \item criar índice, apagar tabela, abrir conexão.
+    \item executar \texttt{DROP}, executar \texttt{DELETE}, encerrar o SGBD.
+\end{enumerate}
+
+\item SQL embutido significa que:
+
+\begin{enumerate}[label=\alph*)]
+    \item comandos SQL são inseridos dentro de uma linguagem de programação geral.
+    \item comandos SQL são proibidos dentro de programas.
+    \item o banco é acessado apenas por interface gráfica.
+    \item o SGBD deixa de usar SQL.
+\end{enumerate}
+
+\item Em SQL embutido, os comandos SQL podem incluir:
+
+\begin{enumerate}[label=\alph*)]
+    \item definições de dados, restrições, consultas, atualizações e visões.
+    \item apenas comandos \texttt{SELECT}.
+    \item apenas comandos \texttt{DROP}.
+    \item somente comentários.
+\end{enumerate}
+
+\item Em SQL embutido, comandos como \texttt{EXEC SQL} servem para:
+
+\begin{enumerate}[label=\alph*)]
+    \item distinguir comandos SQL dos comandos da linguagem hospedeira.
+    \item apagar o banco automaticamente.
+    \item declarar uma chave primária em Java.
+    \item criar uma conexão HTTP.
+\end{enumerate}
+
+\item Variáveis compartilhadas em SQL embutido geralmente aparecem prefixadas por:
+
+\begin{enumerate}[label=\alph*)]
+    \item dois pontos, como \texttt{:variavel}.
+    \item arroba, como \texttt{@variavel}.
+    \item sustenido, como \texttt{\#variavel}.
+    \item cifrão, como \texttt{\$variavel}.
+\end{enumerate}
+
+\item O pré-processador em SQL embutido pode:
+
+\begin{enumerate}[label=\alph*)]
+    \item separar comandos SQL embutidos do programa na linguagem hospedeira.
+    \item remover todas as tabelas do banco.
+    \item substituir o SGBD por um arquivo local.
+    \item impedir a compilação da aplicação.
+\end{enumerate}
+
+\item No SQL embutido em C, variáveis declaradas em uma seção \texttt{DECLARE} são usadas para:
+
+\begin{enumerate}[label=\alph*)]
+    \item compartilhar valores entre o programa e comandos SQL.
+    \item criar automaticamente todas as tabelas.
+    \item impedir comunicação com o banco.
+    \item apagar exceções do compilador.
+\end{enumerate}
+
+\item Em SQL embutido, variáveis como \texttt{SQLCODE} ou \texttt{SQLSTATE} são usadas para:
+
+\begin{enumerate}[label=\alph*)]
+    \item comunicar erros ou exceções entre o BD e o programa.
+    \item armazenar a senha criptografada do usuário.
+    \item substituir todos os cursores.
+    \item criar uma nova linguagem de programação.
+\end{enumerate}
+
+\item O comando \texttt{CONNECT TO server-name AS connection-name AUTHORIZATION user-account-info;} é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item conectar o programa a um servidor de banco de dados.
+    \item fechar todas as conexões.
+    \item criar uma tabela.
+    \item executar uma consulta aninhada.
+\end{enumerate}
+
+\item O comando \texttt{SET CONNECTION connection-name;} é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item mudar a conexão ativa.
+    \item remover uma conexão do banco.
+    \item apagar a conexão fisicamente.
+    \item criar uma função armazenada.
+\end{enumerate}
+
+\item O comando \texttt{DISCONNECT connection-name;} é usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item desconectar uma conexão.
+    \item criar uma conexão.
+    \item mudar a conexão ativa.
+    \item criar uma trigger.
+\end{enumerate}
+
+\item Em SQL embutido, quando uma consulta retorna múltiplas tuplas, é necessário usar:
+
+\begin{enumerate}[label=\alph*)]
+    \item cursor.
+    \item \texttt{DROP TABLE}.
+    \item chave primária composta.
+    \item \texttt{DELETE} sem \texttt{WHERE}.
+\end{enumerate}
+
+\item O comando \texttt{FETCH} em um cursor serve para:
+
+\begin{enumerate}[label=\alph*)]
+    \item mover o cursor para a próxima tupla.
+    \item apagar todas as tuplas.
+    \item criar uma nova conexão.
+    \item declarar uma procedure.
+\end{enumerate}
+
+\item O comando \texttt{CLOSE CURSOR} indica que:
+
+\begin{enumerate}[label=\alph*)]
+    \item o processamento da consulta foi completado.
+    \item uma tabela foi removida.
+    \item uma conexão foi aberta.
+    \item uma senha foi criptografada.
+\end{enumerate}
+
+\item A SQL dinâmica permite:
+
+\begin{enumerate}[label=\alph*)]
+    \item compor e executar declarações SQL em tempo de execução.
+    \item executar apenas consultas previamente compiladas.
+    \item impedir qualquer comando digitado pelo usuário.
+    \item substituir SQL por XML.
+\end{enumerate}
+
+\item Na SQL embutida tradicional, cada nova consulta pode exigir:
+
+\begin{enumerate}[label=\alph*)]
+    \item alteração do código-fonte.
+    \item remoção do banco.
+    \item desligamento do servidor.
+    \item criação de uma nova linguagem.
+\end{enumerate}
+
+\item Uma atualização dinâmica costuma ser mais simples que uma consulta dinâmica porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item em consultas, tipos e números de atributos recuperados podem ser desconhecidos em tempo de compilação.
+    \item atualizações nunca usam SQL.
+    \item consultas dinâmicas não retornam dados.
+    \item atualizações sempre removem tabelas.
+\end{enumerate}
+
+\item SQLJ é:
+
+\begin{enumerate}[label=\alph*)]
+    \item um padrão para embutir SQL em Java.
+    \item uma linguagem para apagar bancos.
+    \item uma forma de criptografia de senha.
+    \item um tipo de chave estrangeira.
+\end{enumerate}
+
+\item O tradutor SQLJ transforma comandos SQLJ em Java usando a interface:
+
+\begin{enumerate}[label=\alph*)]
+    \item JDBC.
+    \item HTML.
+    \item CSS.
+    \item XML puro.
+\end{enumerate}
+
+\item Em SQLJ, para processar várias tuplas, são usados:
+
+\begin{enumerate}[label=\alph*)]
+    \item iteradores.
+    \item comandos \texttt{DROP}.
+    \item chaves estrangeiras.
+    \item triggers obrigatórias.
+\end{enumerate}
+
+\item Em SQLJ, um iterador designado é associado ao resultado de uma consulta por meio de:
+
+\begin{enumerate}[label=\alph*)]
+    \item lista de tipos e nomes dos atributos.
+    \item apenas nomes de tabelas.
+    \item apenas senhas de usuário.
+    \item apenas comandos \texttt{DELETE}.
+\end{enumerate}
+
+\item Em SQLJ, um iterador posicional lista:
+
+\begin{enumerate}[label=\alph*)]
+    \item somente os tipos dos atributos.
+    \item somente os nomes dos atributos.
+    \item somente as tabelas do banco.
+    \item somente os usuários conectados.
+\end{enumerate}
+
+\item JDBC significa:
+
+\begin{enumerate}[label=\alph*)]
+    \item Java Database Connectivity.
+    \item Java Data Backup Control.
+    \item Join Database Command.
+    \item Java Domain Constraint.
+\end{enumerate}
+
+\item JDBC é uma:
+
+\begin{enumerate}[label=\alph*)]
+    \item biblioteca de funções de BD disponível para Java.
+    \item linguagem completamente nova que substitui Java.
+    \item técnica exclusiva para apagar bancos.
+    \item criptografia de senha.
+\end{enumerate}
+
+\item Um programa Java com JDBC pode acessar qualquer SGBD relacional que possua:
+
+\begin{enumerate}[label=\alph*)]
+    \item driver JDBC.
+    \item arquivo PDF.
+    \item comando \texttt{DROP}.
+    \item senha em texto puro.
+\end{enumerate}
+
+\item JDBC permite que um programa:
+
+\begin{enumerate}[label=\alph*)]
+    \item conecte-se a vários bancos ou fontes de dados.
+    \item acesse apenas um banco fixo sem driver.
+    \item elimine a necessidade de SQL.
+    \item funcione sem conexão.
+\end{enumerate}
+
+\item Um dos primeiros passos no acesso a BD com JDBC é:
+
+\begin{enumerate}[label=\alph*)]
+    \item importar a biblioteca \texttt{java.sql.*}.
+    \item executar \texttt{DROP TABLE}.
+    \item fechar a conexão antes de abrir.
+    \item criptografar todas as tabelas.
+\end{enumerate}
+
+\item Em JDBC, um objeto \texttt{Connection} representa:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma conexão com o banco de dados.
+    \item uma tupla retornada.
+    \item uma coluna da tabela.
+    \item uma função armazenada.
+\end{enumerate}
+
+\item Em JDBC, um objeto \texttt{Statement} representa:
+
+\begin{enumerate}[label=\alph*)]
+    \item um comando SQL a ser executado.
+    \item uma conexão física com a internet.
+    \item uma tabela resultante.
+    \item uma senha criptografada.
+\end{enumerate}
+
+\item Em JDBC, parâmetros de comandos SQL podem ser indicados por:
+
+\begin{enumerate}[label=\alph*)]
+    \item ponto de interrogação, \texttt{?}.
+    \item asterisco, \texttt{*}.
+    \item dois pontos, \texttt{:}.
+    \item barra, \texttt{/}.
+\end{enumerate}
+
+\item Em JDBC, \texttt{PreparedStatement} é recomendado principalmente quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item a consulta será executada múltiplas vezes ou possui parâmetros.
+    \item a consulta nunca será executada.
+    \item o objetivo é apagar a conexão.
+    \item o banco não suporta SQL.
+\end{enumerate}
+
+\item Em JDBC, antes de executar um \texttt{PreparedStatement}, os parâmetros devem ser:
+
+\begin{enumerate}[label=\alph*)]
+    \item ligados a variáveis do programa.
+    \item apagados do banco.
+    \item transformados em tabelas.
+    \item convertidos obrigatoriamente para XML.
+\end{enumerate}
+
+\item Em JDBC, \texttt{executeQuery} é usado principalmente para:
+
+\begin{enumerate}[label=\alph*)]
+    \item comandos de consulta que retornam \texttt{ResultSet}.
+    \item comandos \texttt{INSERT}, \texttt{DELETE} e \texttt{UPDATE}.
+    \item criação de classes Java.
+    \item fechamento de conexão.
+\end{enumerate}
+
+\item Em JDBC, \texttt{executeUpdate} é usado principalmente para:
+
+\begin{enumerate}[label=\alph*)]
+    \item comandos \texttt{INSERT}, \texttt{DELETE} ou \texttt{UPDATE}.
+    \item consultas que retornam \texttt{ResultSet}.
+    \item abrir conexão.
+    \item criar driver.
+\end{enumerate}
+
+\item Em JDBC, \texttt{ResultSet} pode ser entendido como:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma tabela bidimensional com o resultado da consulta.
+    \item uma chave primária.
+    \item uma conexão ativa.
+    \item uma procedure armazenada.
+\end{enumerate}
+
+\item Em JDBC, o método \texttt{next()} de um \texttt{ResultSet} serve para:
+
+\begin{enumerate}[label=\alph*)]
+    \item avançar para a próxima linha do resultado.
+    \item apagar a próxima linha da tabela.
+    \item fechar a conexão.
+    \item criar uma nova tabela.
+\end{enumerate}
+
+\item Hibernate facilita principalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item o mapeamento objeto-relacional.
+    \item a remoção de todos os bancos relacionais.
+    \item a substituição de classes Java por SQL puro.
+    \item a criação de senhas MD5.
+\end{enumerate}
+
+\item Hibernate pode transformar:
+
+\begin{enumerate}[label=\alph*)]
+    \item classes Java em tabelas de dados e vice-versa.
+    \item consultas SQL em imagens.
+    \item conexões em arquivos PDF.
+    \item senhas em chaves primárias.
+\end{enumerate}
+
+\item Uma vantagem do Hibernate apresentada na aula é:
+
+\begin{enumerate}[label=\alph*)]
+    \item gerar chamadas SQL e liberar o desenvolvedor de conversões manuais.
+    \item impedir portabilidade entre SGBDs.
+    \item eliminar completamente a necessidade de banco de dados.
+    \item substituir o SGBD por HTML.
+\end{enumerate}
+
+\item Em Hibernate, um arquivo XML pode ser usado para:
+
+\begin{enumerate}[label=\alph*)]
+    \item relacionar propriedades do objeto aos campos da tabela.
+    \item apagar usuários do banco.
+    \item executar \texttt{DELETE} sem \texttt{WHERE}.
+    \item substituir a linguagem Java.
+\end{enumerate}
+
+\item DAO, no contexto do exemplo de Hibernate, aparece como uma classe responsável por:
+
+\begin{enumerate}[label=\alph*)]
+    \item persistir o objeto.
+    \item criptografar todas as senhas.
+    \item apagar o servidor.
+    \item substituir o driver JDBC.
+\end{enumerate}
+
+\item SQL embutido provê principalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item programação de BD estática.
+    \item programação dinâmica via API.
+    \item ausência de pré-processamento.
+    \item execução apenas em tempo de execução.
+\end{enumerate}
+
+\item APIs de acesso a BD oferecem como vantagem:
+
+\begin{enumerate}[label=\alph*)]
+    \item não precisar de pré-processamento, sendo mais flexíveis.
+    \item checagem completa do SQL em tempo de compilação.
+    \item impossibilidade de conexão.
+    \item ausência de funções.
+\end{enumerate}
+
+\item Uma desvantagem de APIs de acesso a BD é que:
+
+\begin{enumerate}[label=\alph*)]
+    \item a checagem do SQL é feita em tempo de execução.
+    \item nunca permitem SQL dinâmico.
+    \item exigem sempre pré-processador.
+    \item não podem usar strings.
+\end{enumerate}
+
+\item SQL/CLI significa:
+
+\begin{enumerate}[label=\alph*)]
+    \item Call Level Interface.
+    \item Command Line Internet.
+    \item Create Logic Index.
+    \item Control Language Instance.
+\end{enumerate}
+
+\item SQL/CLI faz parte:
+
+\begin{enumerate}[label=\alph*)]
+    \item do padrão SQL.
+    \item apenas do HTML.
+    \item do sistema operacional.
+    \item de uma linguagem sem relação com BD.
+\end{enumerate}
+
+\item Em SQL/CLI, comandos SQL são:
+
+\begin{enumerate}[label=\alph*)]
+    \item criados dinamicamente e passados como parâmetros string.
+    \item proibidos dentro de programas.
+    \item sempre previamente compilados.
+    \item substituídos por imagens.
+\end{enumerate}
+
+\item Um dos componentes de SQL/CLI é:
+
+\begin{enumerate}[label=\alph*)]
+    \item registro de ambiente.
+    \item registro de senha MD5.
+    \item registro de arquivo PDF.
+    \item registro de página HTML.
+\end{enumerate}
+
+\item O registro de conexão em SQL/CLI mantém:
+
+\begin{enumerate}[label=\alph*)]
+    \item informações de controle de conexão de um BD em particular.
+    \item informações sobre uma senha em texto puro.
+    \item informações sobre imagens do sistema.
+    \item apenas comentários do programa.
+\end{enumerate}
+
+\item Procedimentos armazenados são:
+
+\begin{enumerate}[label=\alph*)]
+    \item funções ou procedimentos armazenados localmente e executados pelo SGBD.
+    \item comandos que só rodam no navegador.
+    \item consultas digitadas apenas manualmente.
+    \item chaves estrangeiras.
+\end{enumerate}
+
+\item Uma vantagem dos procedimentos armazenados é:
+
+\begin{enumerate}[label=\alph*)]
+    \item evitar duplicação quando o mesmo procedimento é usado por várias aplicações.
+    \item tornar impossível o reuso por várias aplicações.
+    \item impedir execução pelo servidor.
+    \item eliminar completamente SQL.
+\end{enumerate}
+
+\item Outra vantagem dos procedimentos armazenados é:
+
+\begin{enumerate}[label=\alph*)]
+    \item reduzir custos de comunicação ao executar no servidor.
+    \item aumentar obrigatoriamente o tráfego entre cliente e servidor.
+    \item impedir qualquer chamada externa.
+    \item remover o SGBD.
+\end{enumerate}
+
+\item Uma desvantagem dos procedimentos armazenados é:
+
+\begin{enumerate}[label=\alph*)]
+    \item problemas de portabilidade, pois cada SGBD pode ter sua própria sintaxe.
+    \item impossibilidade de serem chamados por aplicações.
+    \item ausência de execução no servidor.
+    \item impossibilidade de uso com SQL.
+\end{enumerate}
+
+\item O comando usado para chamar procedimento ou função armazenada é:
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{CALL}.
+    \item \texttt{FETCH}.
+    \item \texttt{DROP}.
+    \item \texttt{CONNECT}.
+\end{enumerate}
+
+\item SQL/PSM é:
+
+\begin{enumerate}[label=\alph*)]
+    \item parte do padrão SQL para escrever módulos armazenados persistentes.
+    \item uma API exclusiva de Java.
+    \item uma técnica de ataque por strings maliciosas.
+    \item uma forma de remover cursores.
+\end{enumerate}
+
+\item SQL/PSM adiciona ao SQL:
+
+\begin{enumerate}[label=\alph*)]
+    \item construções de programação como ramificações e loops.
+    \item apenas comandos \texttt{DROP}.
+    \item apenas comandos HTML.
+    \item apenas criptografia MD5.
+\end{enumerate}
+
+\item SQL Injection é:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma ameaça à segurança e integridade de sistemas que interagem com BD via SQL.
+    \item uma técnica segura de criptografia de senha.
+    \item uma forma normal de banco de dados.
+    \item uma biblioteca de Java.
+\end{enumerate}
+
+\item SQL Injection geralmente envolve:
+
+\begin{enumerate}[label=\alph*)]
+    \item uso de strings maliciosas.
+    \item uso obrigatório de chaves primárias.
+    \item criação de índices.
+    \item normalização até BCNF.
+\end{enumerate}
+
+\item No exemplo da aula, a entrada \texttt{111111100 OR TRUE} em uma concatenação SQL é perigosa porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item pode transformar a condição em verdadeira para muitas tuplas.
+    \item cria automaticamente uma chave estrangeira.
+    \item impede qualquer exclusão.
+    \item criptografa a senha corretamente.
+\end{enumerate}
+
+\item Uma prática que ajuda a reduzir risco de SQL Injection é:
+
+\begin{enumerate}[label=\alph*)]
+    \item usar comandos parametrizados, como \texttt{PreparedStatement}.
+    \item concatenar diretamente toda entrada do usuário.
+    \item aceitar qualquer string sem validação.
+    \item usar \texttt{DELETE} sem \texttt{WHERE}.
+\end{enumerate}
+
+\item Em dados criptografados no exemplo da aula, o \textit{salt} serve para:
+
+\begin{enumerate}[label=\alph*)]
+    \item compor o valor usado no hash da senha.
+    \item substituir o nome do usuário.
+    \item criar uma chave estrangeira.
+    \item abrir conexão JDBC.
+\end{enumerate}
+
+\item No exemplo de senha da aula, o valor armazenado no banco é:
+
+\begin{enumerate}[label=\alph*)]
+    \item o hash da senha combinada com salt.
+    \item a senha em texto puro.
+    \item apenas o CPF do usuário.
+    \item o comando SQL completo.
+\end{enumerate}
+
+\item No login com senha criptografada, o servidor compara:
+
+\begin{enumerate}[label=\alph*)]
+    \item o hash calculado da senha informada com o hash armazenado.
+    \item a senha em texto puro com o CPF.
+    \item a consulta SQL com o nome da tabela.
+    \item a chave estrangeira com a chave primária.
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Questões de Verdadeiro ou Falso}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) A maioria das interações práticas com BD ocorre por programas de aplicação.
+    \item ( \quad ) Interfaces web podem acessar bancos de dados.
+    \item ( \quad ) A interface interativa é a única forma prática de acessar um BD.
+    \item ( \quad ) Programação de BD é um assunto amplo e com várias técnicas.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Java pode ser uma linguagem hospedeira.
+    \item ( \quad ) SQL pode ser sublinguagem de dados.
+    \item ( \quad ) SQL embutido mistura comandos SQL com linguagem hospedeira.
+    \item ( \quad ) Linguagem hospedeira e SQL são sempre a mesma coisa.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) O descompasso de impedância envolve incompatibilidades entre modelos.
+    \item ( \quad ) Resultados SQL com várias tuplas podem exigir cursores ou iteradores.
+    \item ( \quad ) Tipos de dados podem contribuir para o descompasso de impedância.
+    \item ( \quad ) O descompasso de impedância só ocorre em bancos NoSQL.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) SQL embutido pode usar \texttt{EXEC SQL}.
+    \item ( \quad ) Variáveis compartilhadas podem ser prefixadas com dois pontos.
+    \item ( \quad ) Um pré-processador pode separar SQL do código hospedeiro.
+    \item ( \quad ) SQL embutido nunca permite consultas.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) \texttt{CONNECT} pode abrir conexão com servidor de BD.
+    \item ( \quad ) \texttt{SET CONNECTION} pode mudar a conexão ativa.
+    \item ( \quad ) \texttt{DISCONNECT} pode fechar uma conexão.
+    \item ( \quad ) Apenas uma conexão pode existir em todo o programa.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Cursor é útil para processar múltiplas tuplas.
+    \item ( \quad ) \texttt{FETCH} move o cursor para a próxima tupla.
+    \item ( \quad ) \texttt{CLOSE CURSOR} indica fim do processamento.
+    \item ( \quad ) Cursor é usado apenas para apagar tabelas.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) SQL dinâmica permite montar comandos SQL em tempo de execução.
+    \item ( \quad ) SQL dinâmica pode receber comandos digitados pelo usuário.
+    \item ( \quad ) Consulta dinâmica pode ser complexa.
+    \item ( \quad ) SQL dinâmica nunca usa strings.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) SQLJ é um padrão para embutir SQL em Java.
+    \item ( \quad ) SQLJ é traduzido para Java usando JDBC.
+    \item ( \quad ) SQLJ usa iteradores para múltiplas tuplas.
+    \item ( \quad ) SQLJ é uma técnica exclusiva de criptografia.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) JDBC significa Java Database Connectivity.
+    \item ( \quad ) JDBC usa drivers para acessar SGBDs.
+    \item ( \quad ) \texttt{ResultSet} representa resultado de consulta.
+    \item ( \quad ) \texttt{executeQuery} é usado principalmente para \texttt{INSERT}.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Hibernate facilita o mapeamento objeto-relacional.
+    \item ( \quad ) Hibernate pode gerar chamadas SQL.
+    \item ( \quad ) Hibernate pode melhorar portabilidade entre SGBDs.
+    \item ( \quad ) Hibernate elimina completamente a existência de tabelas.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) SQL/CLI é Call Level Interface.
+    \item ( \quad ) SQL/CLI faz parte do padrão SQL.
+    \item ( \quad ) SQL/CLI usa comandos SQL criados dinamicamente e passados como strings.
+    \item ( \quad ) SQL/CLI não possui componentes de controle.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Procedimentos armazenados são executados pelo SGBD.
+    \item ( \quad ) Procedimentos armazenados podem reduzir duplicação.
+    \item ( \quad ) Procedimentos armazenados podem reduzir custo de comunicação.
+    \item ( \quad ) Procedimentos armazenados não possuem problemas de portabilidade.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) SQL/PSM permite escrever módulos armazenados persistentes.
+    \item ( \quad ) SQL/PSM adiciona ramificações e loops ao SQL.
+    \item ( \quad ) SQL/PSM aumenta o poder de SQL.
+    \item ( \quad ) SQL/PSM é o mesmo que SQL Injection.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) SQL Injection ameaça segurança e integridade.
+    \item ( \quad ) SQL Injection pode usar strings maliciosas.
+    \item ( \quad ) Concatenar entrada do usuário diretamente em SQL pode ser perigoso.
+    \item ( \quad ) PreparedStatement aumenta o risco de SQL Injection.
+\end{enumerate}
+
+\item Julgue as afirmações:
+
+\begin{enumerate}[label=\alph*)]
+    \item ( \quad ) Senhas podem ser armazenadas como hash com salt.
+    \item ( \quad ) No login, pode-se comparar o hash calculado com o hash armazenado.
+    \item ( \quad ) Armazenar senha em texto puro é sempre a melhor prática.
+    \item ( \quad ) HTTPS aparece no fluxo de envio de dados no exemplo da aula.
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Questões de Aplicação Objetiva}
+
+\begin{enumerate}[resume,label=\textbf{Q\arabic*.}]
+
+\item Considere o trecho:
+
+\[
+\texttt{String sql = "DELETE FROM EMPLOYEE WHERE ssn=" + ssn;}
+\]
+
+Qual é o principal problema desse código?
+
+\begin{enumerate}[label=\alph*)]
+    \item Risco de SQL Injection por concatenação direta da entrada.
+    \item Uso obrigatório de chave estrangeira.
+    \item Ausência de \texttt{GROUP BY}.
+    \item Uso de \texttt{SELECT} em vez de \texttt{DELETE}.
+\end{enumerate}
+
+\item Considere a entrada:
+
+\[
+\texttt{111111100 OR TRUE}
+\]
+
+em um comando montado por concatenação. O efeito provável é:
+
+\begin{enumerate}[label=\alph*)]
+    \item tornar a condição verdadeira para muitas tuplas.
+    \item impedir execução do SQL para sempre.
+    \item criar uma nova tabela chamada \texttt{TRUE}.
+    \item transformar o comando em \texttt{SELECT}.
+\end{enumerate}
+
+\item Qual alternativa representa uma forma mais segura de executar comandos com parâmetros em JDBC?
+
+\begin{enumerate}[label=\alph*)]
+    \item Usar \texttt{PreparedStatement} com \texttt{?} e ligação de parâmetros.
+    \item Concatenar diretamente qualquer entrada do usuário.
+    \item Usar \texttt{DELETE} sem \texttt{WHERE}.
+    \item Criar uma string SQL com \texttt{OR TRUE}.
+\end{enumerate}
+
+\item Em JDBC, para uma consulta que retorna linhas, qual sequência faz mais sentido?
+
+\begin{enumerate}[label=\alph*)]
+    \item criar conexão, criar comando, executar \texttt{executeQuery}, processar \texttt{ResultSet}.
+    \item criar \texttt{ResultSet}, executar \texttt{DROP}, abrir conexão no final.
+    \item fechar conexão, processar resultado, executar consulta.
+    \item executar \texttt{DELETE}, usar \texttt{GROUP BY}, criar driver.
+\end{enumerate}
+
+\item Em SQL embutido, qual comando é usado para avançar sobre tuplas de uma consulta com várias linhas?
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{FETCH}.
+    \item \texttt{DROP}.
+    \item \texttt{CREATE FUNCTION}.
+    \item \texttt{CALL}.
+\end{enumerate}
+
+\item Em SQLJ, se o iterador lista tipos e nomes dos atributos, ele é:
+
+\begin{enumerate}[label=\alph*)]
+    \item designado.
+    \item posicional.
+    \item dinâmico.
+    \item criptográfico.
+\end{enumerate}
+
+\item Em SQLJ, se o iterador lista somente os tipos dos atributos, ele é:
+
+\begin{enumerate}[label=\alph*)]
+    \item posicional.
+    \item designado.
+    \item armazenado.
+    \item injetado.
+\end{enumerate}
+
+\item Qual técnica é mais diretamente associada ao mapeamento entre classes Java e tabelas relacionais?
+
+\begin{enumerate}[label=\alph*)]
+    \item Hibernate.
+    \item SQL Injection.
+    \item \texttt{FETCH}.
+    \item SQLCODE.
+\end{enumerate}
+
+\item Qual alternativa descreve melhor um procedimento armazenado?
+
+\begin{enumerate}[label=\alph*)]
+    \item Módulo armazenado e executado pelo SGBD.
+    \item Consulta digitada apenas no terminal.
+    \item Tabela virtual derivada de consulta.
+    \item Senha criptografada com MD5.
+\end{enumerate}
+
+\item Em um sistema de login com senha armazenada como hash com salt, o banco deve armazenar preferencialmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item o hash calculado a partir da senha e do salt.
+    \item a senha original em texto puro.
+    \item o comando SQL usado no login.
+    \item o nome da tabela de usuários.
+\end{enumerate}
+
+\item Considere o trecho JDBC:
+\[
+\texttt{Connection con = DriverManager.getConnection(url, user, pass);}
+\]
+O objeto \texttt{Connection} representa:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma conexão ativa com o banco de dados.
+    \item uma linha retornada por consulta.
+    \item uma tabela temporária.
+    \item uma chave estrangeira.
+\end{enumerate}
+
+\item Considere o trecho:
+\[
+\texttt{PreparedStatement ps = con.prepareStatement("SELECT * FROM Aluno WHERE matricula = ?");}
+\]
+O símbolo \texttt{?} representa:
+
+\begin{enumerate}[label=\alph*)]
+    \item um parâmetro a ser ligado antes da execução.
+    \item um erro obrigatório de sintaxe.
+    \item uma coluna chamada interrogação.
+    \item um comando para apagar a tabela.
+\end{enumerate}
+
+\item No trecho:
+\[
+\texttt{ps.setInt(1, matricula);}
+\]
+o número \texttt{1} indica:
+
+\begin{enumerate}[label=\alph*)]
+    \item a posição do primeiro parâmetro \texttt{?} no comando preparado.
+    \item o número de linhas da tabela.
+    \item o tipo da chave primária.
+    \item o número de conexões abertas.
+\end{enumerate}
+
+\item Considere:
+\[
+\texttt{ResultSet rs = ps.executeQuery();}
+\]
+Esse método é adequado principalmente para:
+
+\begin{enumerate}[label=\alph*)]
+    \item comandos \texttt{SELECT} que retornam linhas.
+    \item comandos \texttt{UPDATE} que não retornam linhas.
+    \item fechar a conexão.
+    \item criar uma classe Java.
+\end{enumerate}
+
+\item Para percorrer as linhas retornadas em um \texttt{ResultSet}, usa-se normalmente:
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{while (rs.next())}.
+    \item \texttt{while (con.close())}.
+    \item \texttt{DROP RESULTSET}.
+    \item \texttt{GROUP BY rs}.
+\end{enumerate}
+
+\item Para executar um \texttt{UPDATE}, \texttt{INSERT} ou \texttt{DELETE} em JDBC, o método mais apropriado é:
+
+\begin{enumerate}[label=\alph*)]
+    \item \texttt{executeUpdate()}.
+    \item \texttt{executeQuery()} obrigatoriamente.
+    \item \texttt{next()}.
+    \item \texttt{getString()}.
+\end{enumerate}
+
+\item Considere o código:
+\[
+\texttt{String sql = "SELECT * FROM Usuario WHERE login='" + login + "' AND senha='" + senha + "'";}
+\]
+O principal risco é:
+
+\begin{enumerate}[label=\alph*)]
+    \item SQL Injection por concatenação de entrada externa.
+    \item violação automática da 1FN.
+    \item ausência de \texttt{ORDER BY}.
+    \item uso de transação serial.
+\end{enumerate}
+
+\item Uma entrada como:
+\[
+\texttt{' OR '1'='1}
+\]
+em um login vulnerável pode:
+
+\begin{enumerate}[label=\alph*)]
+    \item tornar a condição sempre verdadeira e burlar a autenticação.
+    \item criar uma chave primária automaticamente.
+    \item impedir qualquer consulta \texttt{SELECT}.
+    \item normalizar a tabela de usuários.
+\end{enumerate}
+
+\item Qual alternativa reduz melhor o risco de SQL Injection em JDBC?
+
+\begin{enumerate}[label=\alph*)]
+    \item Usar \texttt{PreparedStatement} e parâmetros, evitando concatenação direta.
+    \item Remover todos os comandos \texttt{WHERE}.
+    \item Usar \texttt{Statement} com concatenação livre.
+    \item Armazenar senha em texto puro.
+\end{enumerate}
+
+\item Considere uma aplicação que precisa garantir que duas atualizações ocorram juntas. Em JDBC, uma abordagem adequada é:
+
+\begin{enumerate}[label=\alph*)]
+    \item desativar \texttt{autoCommit}, executar as operações e chamar \texttt{commit()} ou \texttt{rollback()}.
+    \item usar sempre \texttt{SELECT DISTINCT}.
+    \item fechar a conexão antes das atualizações.
+    \item executar cada atualização em bancos diferentes sem transação.
+\end{enumerate}
+
+\item No JDBC, se uma exceção ocorre no meio de uma transação manual, a ação adequada para desfazer as alterações parciais é:
+
+\begin{enumerate}[label=\alph*)]
+    \item chamar \texttt{rollback()}.
+    \item chamar \texttt{getString()}.
+    \item chamar \texttt{next()}.
+    \item chamar \texttt{GROUP BY}.
+\end{enumerate}
+
+\item Em SQL embutido, o uso de cursor é necessário principalmente quando:
+
+\begin{enumerate}[label=\alph*)]
+    \item uma consulta retorna múltiplas tuplas e o programa precisa processá-las uma a uma.
+    \item o comando é \texttt{DROP TABLE}.
+    \item não existe linguagem hospedeira.
+    \item a consulta retorna sempre uma constante.
+\end{enumerate}
+
+\item Considere a sequência de cursor:
+\[
+\texttt{DECLARE cursor},\quad \texttt{OPEN},\quad \texttt{FETCH},\quad \texttt{CLOSE}
+\]
+O comando \texttt{FETCH} serve para:
+
+\begin{enumerate}[label=\alph*)]
+    \item obter a próxima tupla do resultado.
+    \item apagar o cursor fisicamente do disco.
+    \item abrir uma nova conexão JDBC.
+    \item executar \texttt{COMMIT} automaticamente.
+\end{enumerate}
+
+\item Uma stored procedure é útil quando se deseja:
+
+\begin{enumerate}[label=\alph*)]
+    \item armazenar lógica de processamento no SGBD para ser chamada por aplicações.
+    \item eliminar todas as tabelas.
+    \item substituir qualquer índice por imagem.
+    \item impedir transações.
+\end{enumerate}
+
+\item Em SQL/PSM, procedimentos e funções armazenadas permitem:
+
+\begin{enumerate}[label=\alph*)]
+    \item usar estruturas procedurais próximas ao banco, como variáveis e controle de fluxo.
+    \item apenas criar arquivos PDF.
+    \item remover a necessidade de SQL.
+    \item impedir chamadas por aplicações.
+\end{enumerate}
+
+\item Hibernate é associado principalmente a:
+
+\begin{enumerate}[label=\alph*)]
+    \item mapeamento objeto-relacional entre classes e tabelas.
+    \item detecção de deadlock por grafo de espera.
+    \item normalização para BCNF.
+    \item ordenação por \texttt{ORDER BY}.
+\end{enumerate}
+
+\item O problema conhecido como descompasso de impedância aparece porque:
+
+\begin{enumerate}[label=\alph*)]
+    \item linguagens de programação e bancos relacionais organizam dados de formas diferentes.
+    \item SQL e Java possuem exatamente o mesmo modelo de dados.
+    \item todo banco relacional dispensa tipos.
+    \item cursores eliminam objetos.
+\end{enumerate}
+
+\item Para armazenar senhas com mais segurança, uma prática melhor que texto puro é:
+
+\begin{enumerate}[label=\alph*)]
+    \item armazenar hash da senha com salt apropriado.
+    \item armazenar a senha original sem proteção.
+    \item colocar a senha no nome da tabela.
+    \item usar \texttt{SELECT *} no login.
+\end{enumerate}
+
+\item Se uma aplicação compara diretamente a senha digitada com uma senha em texto puro armazenada no banco, o problema principal é:
+
+\begin{enumerate}[label=\alph*)]
+    \item exposição grave caso o banco seja vazado.
+    \item excesso de normalização.
+    \item uso obrigatório de cursor.
+    \item conflito \textit{write-write}.
+\end{enumerate}
+
+\item Em uma consulta JDBC, chamar \texttt{rs.getString("nome")} normalmente significa:
+
+\begin{enumerate}[label=\alph*)]
+    \item recuperar o valor da coluna \texttt{nome} da linha atual do \texttt{ResultSet}.
+    \item criar uma coluna chamada \texttt{nome}.
+    \item abrir uma conexão com senha \texttt{nome}.
+    \item executar \texttt{DELETE} na tabela \texttt{nome}.
+\end{enumerate}
+
+
+\end{enumerate}
+
+\newpage
+
+\section*{Gabarito}
+
+\begin{multicols}{2}
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item V, V, F, V
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, V, F
+    \item V, V, F, V
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+    \item a
+\end{enumerate}
+\end{multicols}
+
+\end{document}
