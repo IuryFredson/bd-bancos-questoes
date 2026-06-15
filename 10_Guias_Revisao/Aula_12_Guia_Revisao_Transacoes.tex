@@ -1,0 +1,197 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{multicol}
+\geometry{margin=2.2cm}
+\setlist{itemsep=0.25em, topsep=0.3em}
+\title{Aula 12 -- Processamento de Transações}
+\author{Banco de Dados -- Guia de Revisão}
+\date{}
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Objetivo da aula}
+Esta aula explica transações, propriedades ACID, estados de transação e planos de execução. Para prova, o ponto mais importante é analisar escalonamentos e decidir se são seriais, serializáveis, restauráveis, sem cascata ou estritos.
+
+\section{Transação}
+Uma transação é uma unidade lógica de processamento. Ela deve executar por completo ou não produzir efeito parcial.
+
+Exemplos:
+\begin{itemize}
+    \item transferência bancária;
+    \item compra online;
+    \item reserva de passagem;
+    \item atualização de estoque.
+\end{itemize}
+
+\section{ACID}
+\begin{itemize}
+    \item \textbf{Atomicidade}: tudo ou nada.
+    \item \textbf{Consistência}: leva o banco de um estado consistente a outro.
+    \item \textbf{Isolamento}: parece executar isolada das outras.
+    \item \textbf{Durabilidade}: depois do \texttt{COMMIT}, o efeito permanece.
+\end{itemize}
+
+\section{Comandos SQL}
+\begin{verbatim}
+START TRANSACTION;
+-- comandos
+COMMIT;
+\end{verbatim}
+
+Se houver erro:
+\begin{verbatim}
+START TRANSACTION;
+-- comandos
+ROLLBACK;
+\end{verbatim}
+
+\section{Operações de transação}
+Modelo simplificado:
+\begin{itemize}
+    \item $r_i(X)$: transação $T_i$ lê item $X$.
+    \item $w_i(X)$: transação $T_i$ escreve item $X$.
+    \item $c_i$: transação $T_i$ confirma.
+    \item $a_i$: transação $T_i$ aborta.
+\end{itemize}
+
+\section{Planos de execução}
+Um plano, ou escalonamento, é a ordem em que operações de transações aparecem.
+
+Plano serial:
+\[
+r_1(X), w_1(X), c_1, r_2(X), w_2(X), c_2
+\]
+Plano não serial:
+\[
+r_1(X), r_2(X), w_1(X), w_2(X), c_1, c_2
+\]
+
+\section{Serializabilidade}
+Um plano é serializável quando produz efeito equivalente a algum plano serial.
+
+\subsection{Conflitos}
+Duas operações conflitam quando:
+\begin{itemize}
+    \item são de transações diferentes;
+    \item acessam o mesmo item;
+    \item pelo menos uma é escrita.
+\end{itemize}
+
+Conflitam:
+\begin{itemize}
+    \item $r_1(X)$ e $w_2(X)$;
+    \item $w_1(X)$ e $r_2(X)$;
+    \item $w_1(X)$ e $w_2(X)$.
+\end{itemize}
+
+Não conflitam:
+\begin{itemize}
+    \item $r_1(X)$ e $r_2(X)$;
+    \item operações em itens diferentes.
+\end{itemize}
+
+\section{Grafo de precedência}
+Para verificar serializabilidade por conflito:
+\begin{enumerate}
+    \item Crie um nó para cada transação.
+    \item Para cada conflito, desenhe uma aresta da transação da operação anterior para a posterior.
+    \item Se houver ciclo, não é serializável por conflito.
+    \item Se não houver ciclo, é serializável por conflito.
+\end{enumerate}
+
+\subsection{Exemplo com ciclo}
+Plano:
+\[
+r_1(X),\ w_2(X),\ w_1(X)
+\]
+Conflitos:
+\begin{itemize}
+    \item $r_1(X)$ antes de $w_2(X)$ gera $T_1 \rightarrow T_2$.
+    \item $w_2(X)$ antes de $w_1(X)$ gera $T_2 \rightarrow T_1$.
+\end{itemize}
+Há ciclo. Logo, não é serializável por conflito.
+
+\section{Restaurabilidade}
+Um plano é restaurável se uma transação só confirma depois das transações das quais leu dados confirmarem.
+
+Não restaurável:
+\[
+w_1(X),\ r_2(X),\ c_2,\ a_1
+\]
+$T_2$ leu valor de $T_1$ e confirmou antes de saber se $T_1$ confirmaria.
+
+\section{Plano sem cascata}
+Um plano sem cascata só permite leitura de valores já confirmados.
+
+Não sem cascata:
+\[
+w_1(X),\ r_2(X),\ c_1,\ c_2
+\]
+Mesmo sendo restaurável, $T_2$ leu $X$ antes do \texttt{COMMIT} de $T_1$.
+
+Sem cascata:
+\[
+w_1(X),\ c_1,\ r_2(X),\ c_2
+\]
+
+\section{Plano estrito}
+Em plano estrito, se uma transação escreve $X$, nenhuma outra pode ler nem escrever $X$ até a primeira confirmar ou abortar.
+
+Violação:
+\[
+w_1(X),\ w_2(X),\ c_1,\ c_2
+\]
+$T_2$ escreve $X$ antes de $T_1$ confirmar.
+
+\section{Problemas clássicos}
+\begin{itemize}
+    \item \textbf{Leitura suja}: ler valor escrito por transação ainda não confirmada.
+    \item \textbf{Atualização perdida}: duas transações atualizam o mesmo valor e uma sobrescreve o efeito da outra.
+    \item \textbf{Plano não restaurável}: uma transação confirma baseada em valor de outra que depois aborta.
+\end{itemize}
+
+\section{Pegadinhas comuns}
+\begin{itemize}
+    \item Serial e serializável não são a mesma coisa.
+    \item Todo plano serial é serializável, mas nem todo serializável é serial.
+    \item Plano sem cascata é mais forte que restaurável.
+    \item Plano estrito é ainda mais restritivo.
+\end{itemize}
+
+\section{Desafios}
+\subsection*{Desafio 1}
+Analise:
+\[
+r_1(X),\ w_2(X),\ w_1(X)
+\]
+O grafo de precedência tem ciclo?
+
+\subsection*{Desafio 2}
+Analise:
+\[
+w_1(X),\ r_2(X),\ c_2,\ a_1
+\]
+O plano é restaurável?
+
+\section{Resolução dos desafios}
+\textbf{Desafio 1}: sim. Há $T_1\rightarrow T_2$ e $T_2\rightarrow T_1$. Não é serializável por conflito.
+
+\textbf{Desafio 2}: não. $T_2$ leu valor escrito por $T_1$ e confirmou antes de $T_1$. Se $T_1$ aborta, $T_2$ confirmou com dado inválido.
+
+\section{Checklist final}
+\begin{itemize}
+    \item Sei definir ACID?
+    \item Sei reconhecer conflito entre operações?
+    \item Sei montar grafo de precedência?
+    \item Sei diferenciar restaurável, sem cascata e estrito?
+    \item Sei identificar leitura suja e atualização perdida?
+\end{itemize}
+
+\end{document}

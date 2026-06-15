@@ -1,0 +1,218 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{multicol}
+\geometry{margin=2.2cm}
+\setlist{itemsep=0.25em, topsep=0.3em}
+\title{Aula 09 -- Dependência Funcional e Normalização}
+\author{Banco de Dados -- Guia de Revisão}
+\date{}
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Objetivo da aula}
+Esta aula explica por que alguns esquemas relacionais são ruins mesmo quando funcionam. O foco é reconhecer redundância, anomalias, dependências funcionais e formas normais. Para a prova, o mais importante é saber analisar uma relação dada e responder: quais dependências existem, qual é a chave, qual forma normal é violada e qual decomposição corrige o problema.
+
+\section{Ideia central}
+Normalização é o processo de organizar atributos em relações para reduzir redundância e evitar anomalias. A decisão não é estética: ela depende das dependências funcionais do domínio.
+
+\subsection{Boa semântica de relação}
+Uma relação deve agrupar atributos que descrevem uma mesma entidade ou relacionamento. Quando uma tabela mistura conceitos diferentes, aparecem muitos valores repetidos, valores nulos e dependências indiretas.
+
+\subsection{Anomalias}
+\begin{itemize}
+    \item \textbf{Atualização}: a mesma informação aparece repetida e precisa ser alterada em várias tuplas.
+    \item \textbf{Inserção}: não é possível inserir uma informação sem fornecer outra informação ainda inexistente.
+    \item \textbf{Remoção}: ao remover uma tupla, perde-se uma informação que deveria permanecer.
+\end{itemize}
+
+\section{Dependência funcional}
+A dependência funcional $X \rightarrow Y$ significa: se duas tuplas têm o mesmo valor em $X$, então devem ter o mesmo valor em $Y$.
+
+Exemplo:
+\[
+\text{idCurso} \rightarrow \text{nomeCurso}
+\]
+Se o id do curso é 10, o nome do curso deve ser sempre o mesmo.
+
+\section{Exemplo visual: redundância}
+\[
+\begin{array}{|c|c|c|c|}
+\hline
+\text{idAluno} & \text{nomeAluno} & \text{idCurso} & \text{nomeCurso}\\
+\hline
+1 & \text{Ana} & 10 & \text{BTI}\\
+2 & \text{Bruno} & 10 & \text{BTI}\\
+3 & \text{Carla} & 20 & \text{Computacao}\\
+\hline
+\end{array}
+\]
+
+Aqui há redundância porque $\text{idCurso} \rightarrow \text{nomeCurso}$. O nome do curso BTI é repetido para todos os alunos do curso 10.
+
+Decomposição adequada:
+\[
+Aluno(\text{idAluno}, \text{nomeAluno}, \text{idCurso})
+\]
+\[
+Curso(\text{idCurso}, \text{nomeCurso})
+\]
+
+\section{Fechamento de atributos}
+O fechamento $X^+$ é o conjunto de atributos que podem ser determinados por $X$ usando as dependências funcionais.
+
+Procedimento:
+\begin{enumerate}
+    \item Comece com $X^+ = X$.
+    \item Se existe $A \rightarrow B$ e $A \subseteq X^+$, adicione $B$ a $X^+$.
+    \item Repita até não conseguir adicionar mais nada.
+\end{enumerate}
+
+Exemplo:
+\[
+R(A,B,C,D),\quad F=\{A\rightarrow B,\ B\rightarrow C,\ A\rightarrow D\}
+\]
+Então:
+\[
+A^+ = \{A,B,C,D\}
+\]
+Logo, $A$ é chave se determina todos os atributos da relação.
+
+\section{Chaves candidatas}
+Uma chave candidata é um conjunto mínimo de atributos que determina todos os atributos da relação.
+
+Exemplo:
+\[
+R(A,B,C,D),\quad F=\{AB\rightarrow C,\ C\rightarrow D\}
+\]
+\[
+(AB)^+ = \{A,B,C,D\}
+\]
+Então $AB$ é chave candidata. $A$ sozinho não determina tudo, e $B$ sozinho também não.
+
+\section{Formas normais}
+\subsection{1FN}
+A relação está na Primeira Forma Normal quando todos os atributos possuem valores atômicos. Uma célula não deve guardar lista de valores.
+
+Violação:
+\[
+Aluno(\text{matricula}, \text{nome}, \text{telefones})
+\]
+se \texttt{telefones} guarda vários telefones na mesma célula.
+
+\subsection{2FN}
+A 2FN elimina dependências parciais de atributos não-chave em relação a uma chave composta.
+
+Exemplo de violação:
+\[
+Matricula(\text{idAluno},\text{idDisciplina},\text{nomeAluno},\text{nomeDisciplina},\text{nota})
+\]
+Chave: $(\text{idAluno},\text{idDisciplina})$.
+
+Dependências:
+\[
+\text{idAluno} \rightarrow \text{nomeAluno}
+\]
+\[
+\text{idDisciplina} \rightarrow \text{nomeDisciplina}
+\]
+Como atributos não-chave dependem só de parte da chave composta, há violação de 2FN.
+
+\subsection{3FN}
+A 3FN elimina dependências transitivas de atributos não-chave.
+
+Exemplo:
+\[
+Funcionario(\text{cpf},\text{nome},\text{idDepto},\text{nomeDepto})
+\]
+\[
+\text{cpf} \rightarrow \text{idDepto},\quad \text{idDepto} \rightarrow \text{nomeDepto}
+\]
+Logo, $\text{cpf} \rightarrow \text{nomeDepto}$ indiretamente. Isso é dependência transitiva.
+
+\subsection{BCNF}
+Uma relação está em BCNF quando, para toda dependência funcional não trivial $X \rightarrow Y$, $X$ é superchave.
+
+Exemplo de violação:
+\[
+R(A,B,C),\quad A\rightarrow B,\quad B\rightarrow C
+\]
+Se $A$ é chave, mas $B$ não é superchave, então $B\rightarrow C$ viola BCNF.
+
+\section{Cobertura mínima}
+Uma cobertura mínima é uma versão simplificada de um conjunto de dependências funcionais, sem atributos ou dependências redundantes.
+
+Passos típicos:
+\begin{enumerate}
+    \item Separar lado direito: $A\rightarrow BC$ vira $A\rightarrow B$ e $A\rightarrow C$.
+    \item Remover atributos desnecessários do lado esquerdo.
+    \item Remover dependências que podem ser inferidas por outras.
+\end{enumerate}
+
+\section{Junção sem perdas e preservação}
+\textbf{Junção sem perdas}: ao decompor e depois juntar, não aparecem tuplas espúrias.
+
+\textbf{Preservação de dependências}: as dependências originais ainda podem ser verificadas nas relações decompostas sem precisar juntar tudo.
+
+Exemplo:
+\[
+R(A,B,C),\quad F=\{A\rightarrow B,\ B\rightarrow C\}
+\]
+Decomposição:
+\[
+R_1(A,B),\quad R_2(B,C)
+\]
+Preserva diretamente $A\rightarrow B$ em $R_1$ e $B\rightarrow C$ em $R_2$.
+
+\section{Pegadinhas comuns}
+\begin{itemize}
+    \item Chave simples não viola 2FN por dependência parcial.
+    \item Toda relação em BCNF está em 3FN, mas nem toda 3FN está em BCNF.
+    \item Dependência transitiva costuma ser cobrada com três atributos: $A\rightarrow B$ e $B\rightarrow C$.
+    \item Redundância nem sempre é erro de SQL; muitas vezes é erro de projeto relacional.
+\end{itemize}
+
+\section{Desafios}
+\subsection*{Desafio 1}
+Considere:
+\[
+R(A,B,C,D),\quad F=\{A\rightarrow B,\ B\rightarrow C,\ CD\rightarrow A\}
+\]
+Qual é o fechamento de $CD$? $CD$ é chave?
+
+\subsection*{Desafio 2}
+Considere:
+\[
+Pedido(\text{idPedido},\text{idCliente},\text{nomeCliente},\text{data})
+\]
+\[
+\text{idPedido}\rightarrow \text{idCliente},\text{data}
+\]
+\[
+\text{idCliente}\rightarrow \text{nomeCliente}
+\]
+Qual forma normal é violada e qual decomposição é adequada?
+
+\section{Resolução dos desafios}
+\textbf{Desafio 1}: $CD^+ = \{C,D,A,B\}$. Começa com $C,D$, usa $CD\rightarrow A$, depois $A\rightarrow B$, depois $B\rightarrow C$. Como determina todos os atributos, $CD$ é chave.
+
+\textbf{Desafio 2}: há dependência transitiva: $idPedido\rightarrow idCliente\rightarrow nomeCliente$. Viola 3FN. Decomposição: $Pedido(idPedido,idCliente,data)$ e $Cliente(idCliente,nomeCliente)$.
+
+\section{Checklist final}
+Antes da prova, saiba responder:
+\begin{itemize}
+    \item O que significa $X\rightarrow Y$?
+    \item Como calcular fechamento?
+    \item Como identificar chave candidata?
+    \item Qual a diferença entre 1FN, 2FN, 3FN e BCNF?
+    \item Como reconhecer dependência parcial e transitiva?
+    \item Como decompor uma relação ruim?
+\end{itemize}
+
+\end{document}

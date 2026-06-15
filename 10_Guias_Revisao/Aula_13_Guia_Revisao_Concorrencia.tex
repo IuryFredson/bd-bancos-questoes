@@ -1,0 +1,150 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{multicol}
+\geometry{margin=2.2cm}
+\setlist{itemsep=0.25em, topsep=0.3em}
+\title{Aula 13 -- Técnicas de Controle de Concorrência}
+\author{Banco de Dados -- Guia de Revisão}
+\date{}
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Objetivo da aula}
+Esta aula mostra como o SGBD controla transações concorrentes usando bloqueios. O objetivo é preservar isolamento e consistência sem obrigar todas as transações a executarem serialmente.
+
+\section{Por que controlar concorrência?}
+Transações simultâneas podem acessar os mesmos dados. Sem controle, podem ocorrer leitura suja, atualização perdida, inconsistência e planos não serializáveis.
+
+\section{Conflitos}
+Conflitos importantes:
+\begin{itemize}
+    \item \textbf{read-write}: uma transação lê e outra escreve o mesmo item.
+    \item \textbf{write-read}: uma transação escreve e outra lê o mesmo item.
+    \item \textbf{write-write}: duas transações escrevem o mesmo item.
+\end{itemize}
+Leitura com leitura não conflita.
+
+\section{Bloqueio binário}
+No bloqueio binário, um item está bloqueado ou desbloqueado. Problema: não diferencia leitura de escrita, então reduz concorrência.
+
+\section{Bloqueio compartilhado e exclusivo}
+\begin{itemize}
+    \item \textbf{Compartilhado} (S): usado para leitura.
+    \item \textbf{Exclusivo} (X): usado para escrita.
+\end{itemize}
+
+\section{Matriz de compatibilidade}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+ & S & X \\
+\hline
+S & compatível & incompatível \\
+X & incompatível & incompatível \\
+\hline
+\end{tabular}
+\end{center}
+
+Consequência:
+\begin{itemize}
+    \item Muitos leitores podem ler juntos.
+    \item Escrita exige exclusividade.
+\end{itemize}
+
+\section{Upgrade e downgrade}
+\begin{itemize}
+    \item \textbf{Upgrade}: S para X. Ex.: a transação lia e agora precisa escrever.
+    \item \textbf{Downgrade}: X para S. Ex.: não precisa mais escrever, só manter leitura.
+\end{itemize}
+
+\section{2PL -- bloqueio em duas fases}
+O protocolo 2PL exige que toda transação tenha duas fases:
+\begin{enumerate}
+    \item \textbf{Fase de expansão}: pode adquirir bloqueios, mas não liberar.
+    \item \textbf{Fase de encolhimento}: pode liberar bloqueios, mas não adquirir novos.
+\end{enumerate}
+
+Regra essencial: depois do primeiro \texttt{unlock}, não pode haver novo \texttt{lock}.
+
+\subsection{Exemplo que viola 2PL}
+\[
+lock(A),\ read(A),\ unlock(A),\ lock(B),\ read(B),\ unlock(B)
+\]
+Viola porque adquire \texttt{lock(B)} depois de liberar \texttt{A}.
+
+\subsection{Exemplo que respeita 2PL}
+\[
+lock(A),\ lock(B),\ read(A),\ write(B),\ unlock(A),\ unlock(B)
+\]
+Todos os bloqueios foram adquiridos antes do primeiro unlock.
+
+\section{O que 2PL garante?}
+O 2PL garante serializabilidade por conflito. Mas o 2PL básico pode gerar deadlock.
+
+\section{2PL conservador}
+Também chamado de 2PL estático. A transação obtém todos os bloqueios antes de iniciar.
+
+\textbf{Vantagem}: previne deadlock.\newline
+\textbf{Desvantagem}: reduz concorrência, pois prende recursos antes de usar.
+
+\section{2PL estrito}
+Mantém bloqueios exclusivos até o fim da transação. Ajuda a evitar abortos em cascata e facilita recuperação.
+
+\section{2PL rigoroso}
+Mantém bloqueios compartilhados e exclusivos até o fim. É mais restritivo que o 2PL estrito.
+
+\section{Deadlock}
+Deadlock ocorre quando transações esperam circularmente.
+
+Exemplo:
+\begin{itemize}
+    \item $T_1$ bloqueia $A$ e espera $B$.
+    \item $T_2$ bloqueia $B$ e espera $A$.
+\end{itemize}
+Nenhuma progride sem intervenção.
+
+Soluções comuns: detectar e abortar uma transação; prevenir por protocolo; usar timeout.
+
+\section{Starvation}
+Starvation ocorre quando uma transação espera indefinidamente porque sempre é preterida. Política justa de fila pode reduzir o problema.
+
+\section{Pegadinhas comuns}
+\begin{itemize}
+    \item 2PL garante serializabilidade, mas não garante ausência de deadlock.
+    \item 2PL conservador evita deadlock, mas reduz concorrência.
+    \item 2PL estrito mantém bloqueios exclusivos até o fim.
+    \item 2PL rigoroso mantém todos os bloqueios até o fim.
+\end{itemize}
+
+\section{Desafios}
+\subsection*{Desafio 1}
+$T_1$ tem bloqueio compartilhado em $X$. $T_2$ quer escrever em $X$. O que acontece?
+
+\subsection*{Desafio 2}
+A sequência abaixo respeita 2PL?
+\[
+lock(A),\ read(A),\ lock(B),\ write(B),\ unlock(B),\ unlock(A)
+\]
+
+\section{Resolução dos desafios}
+\textbf{Desafio 1}: $T_2$ precisa de bloqueio exclusivo, incompatível com S. Deve esperar ou ser abortada pelo protocolo.
+
+\textbf{Desafio 2}: sim. Todos os locks ocorrem antes do primeiro unlock.
+
+\section{Checklist final}
+\begin{itemize}
+    \item Sei a matriz S/X?
+    \item Sei identificar upgrade e downgrade?
+    \item Sei dizer se uma sequência viola 2PL?
+    \item Sei diferenciar 2PL básico, conservador, estrito e rigoroso?
+    \item Sei reconhecer deadlock e starvation?
+\end{itemize}
+
+\end{document}

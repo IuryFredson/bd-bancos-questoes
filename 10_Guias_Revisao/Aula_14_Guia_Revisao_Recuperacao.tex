@@ -1,0 +1,149 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{multicol}
+\geometry{margin=2.2cm}
+\setlist{itemsep=0.25em, topsep=0.3em}
+\title{Aula 14 -- Técnicas de Recuperação de BD}
+\author{Banco de Dados -- Guia de Revisão}
+\date{}
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Objetivo da aula}
+Esta aula trata de como o SGBD recupera o banco após falhas. O foco é manter atomicidade e durabilidade mesmo quando há queda de energia, erro de sistema, falha de transação ou crash.
+
+\section{Ideia central}
+Se uma transação confirmou, seus efeitos devem permanecer. Se abortou ou ficou incompleta, seus efeitos não devem permanecer. A recuperação usa log, checkpoints, undo e redo.
+
+\section{Tipos de falha}
+\begin{itemize}
+    \item \textbf{Falha de transação}: erro lógico, violação de restrição, deadlock ou abort.
+    \item \textbf{Falha do sistema}: queda do SGBD ou energia; memória principal é perdida.
+    \item \textbf{Falha de mídia}: problema no disco, exigindo backup.
+\end{itemize}
+
+\section{Log}
+O log registra operações importantes antes que o banco seja alterado permanentemente.
+
+Registros típicos:
+\begin{verbatim}
+<START T1>
+<WRITE T1, X, old, new>
+<COMMIT T1>
+<ABORT T1>
+\end{verbatim}
+
+\section{Write-Ahead Logging}
+Regra de WAL: o registro de log deve ser gravado em armazenamento estável antes da página de dados correspondente ser gravada no banco.
+
+Intuição: se o banco gravou uma alteração, o SGBD precisa ter informação suficiente no log para desfazer ou refazer.
+
+\section{UNDO e REDO}
+\begin{itemize}
+    \item \textbf{UNDO}: desfaz efeitos de transações não confirmadas.
+    \item \textbf{REDO}: refaz efeitos de transações confirmadas que talvez não tenham chegado ao disco.
+\end{itemize}
+
+\section{Exemplo visual de log}
+\begin{verbatim}
+<START T1>
+<WRITE T1, A, 100, 80>
+<START T2>
+<WRITE T2, B, 50, 70>
+<COMMIT T1>
+-- falha do sistema
+\end{verbatim}
+
+Após a falha:
+\begin{itemize}
+    \item $T_1$ confirmou: pode precisar de REDO.
+    \item $T_2$ não confirmou: precisa de UNDO.
+\end{itemize}
+
+\section{Checkpoint}
+Checkpoint reduz o trabalho de recuperação. Ele indica um ponto em que o SGBD sincronizou informações suficientes para não precisar analisar todo o log desde o início.
+
+Registro típico:
+\begin{verbatim}
+<CHECKPOINT>
+\end{verbatim}
+
+Com checkpoint, a recuperação procura transações ativas no checkpoint e transações iniciadas depois dele.
+
+\section{Transações confirmadas e não confirmadas}
+Após uma falha:
+\begin{itemize}
+    \item transações com \texttt{COMMIT} no log devem ser preservadas;
+    \item transações sem \texttt{COMMIT} devem ser desfeitas.
+\end{itemize}
+
+\section{Deferred update e immediate update}
+\subsection{Deferred update}
+As atualizações só chegam ao banco depois do commit. Em geral, precisa de REDO para transações confirmadas.
+
+\subsection{Immediate update}
+As atualizações podem chegar ao banco antes do commit. Pode exigir UNDO para transações não confirmadas e REDO para confirmadas.
+
+\section{Backup}
+Falha de mídia pode exigir restauração de backup e reaplicação de log.
+
+Estratégia geral:
+\begin{enumerate}
+    \item Restaurar backup.
+    \item Aplicar REDO de transações confirmadas desde o backup.
+    \item Garantir que transações não confirmadas não permaneçam.
+\end{enumerate}
+
+\section{Relação com ACID}
+\begin{itemize}
+    \item Recuperação protege \textbf{atomicidade}: transação incompleta não fica pela metade.
+    \item Recuperação protege \textbf{durabilidade}: transação confirmada não desaparece.
+\end{itemize}
+
+\section{Pegadinhas comuns}
+\begin{itemize}
+    \item \texttt{COMMIT} no log é decisivo para saber se preserva a transação.
+    \item UNDO não é para transação confirmada.
+    \item REDO não é para transação abortada.
+    \item Checkpoint não é backup completo; é um ponto de controle no log.
+    \item Falha de mídia é mais grave que falha do sistema.
+\end{itemize}
+
+\section{Desafios}
+\subsection*{Desafio 1}
+Considere o log:
+\begin{verbatim}
+<START T1>
+<WRITE T1, X, 10, 20>
+<COMMIT T1>
+<START T2>
+<WRITE T2, Y, 5, 9>
+-- falha
+\end{verbatim}
+O que fazer com $T_1$ e $T_2$?
+
+\subsection*{Desafio 2}
+Por que WAL é importante?
+
+\section{Resolução dos desafios}
+\textbf{Desafio 1}: $T_1$ confirmou, então deve ser preservada e pode precisar de REDO. $T_2$ não confirmou, então deve ser desfeita com UNDO.
+
+\textbf{Desafio 2}: porque garante que o log necessário para desfazer/refazer esteja salvo antes das alterações no banco, permitindo recuperação correta.
+
+\section{Checklist final}
+\begin{itemize}
+    \item Sei diferenciar UNDO e REDO?
+    \item Sei analisar log com \texttt{START}, \texttt{WRITE}, \texttt{COMMIT} e falha?
+    \item Sei para que serve checkpoint?
+    \item Sei relacionar recuperação com atomicidade e durabilidade?
+    \item Sei diferenciar falha de transação, sistema e mídia?
+\end{itemize}
+
+\end{document}

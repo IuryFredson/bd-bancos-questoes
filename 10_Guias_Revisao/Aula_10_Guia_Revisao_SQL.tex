@@ -1,0 +1,255 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{multicol}
+\geometry{margin=2.2cm}
+\setlist{itemsep=0.25em, topsep=0.3em}
+\title{Aula 10 -- SQL}
+\author{Banco de Dados -- Guia de Revisão}
+\date{}
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Objetivo da aula}
+Esta aula apresenta SQL como linguagem padrão para definição, consulta e manipulação de dados. Para prova objetiva, o foco é identificar comandos, interpretar consultas e prever resultados.
+
+\section{SQL como linguagem declarativa}
+SQL é declarativa: o usuário diz \textbf{o que} deseja, e o SGBD decide \textbf{como} executar.
+
+Exemplo:
+\begin{verbatim}
+SELECT nome
+FROM Aluno
+WHERE curso = 'BTI';
+\end{verbatim}
+A consulta diz qual resultado quer, não qual algoritmo usar.
+
+\section{Categorias de comandos}
+\begin{itemize}
+    \item \textbf{DDL}: definição de dados. Ex.: \texttt{CREATE TABLE}, \texttt{ALTER TABLE}, \texttt{DROP TABLE}.
+    \item \textbf{DML}: manipulação de dados. Ex.: \texttt{SELECT}, \texttt{INSERT}, \texttt{UPDATE}, \texttt{DELETE}.
+    \item \textbf{VDL}: definição de visões. Ex.: \texttt{CREATE VIEW}.
+\end{itemize}
+
+\section{Vocabulário relacional em SQL}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Modelo Relacional & SQL \\
+\hline
+Relação & Tabela \\
+Tupla & Linha \\
+Atributo & Coluna \\
+Domínio & Tipo de dado \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Consulta básica}
+Estrutura principal:
+\begin{verbatim}
+SELECT atributos
+FROM tabelas
+WHERE condicao;
+\end{verbatim}
+
+\begin{itemize}
+    \item \texttt{SELECT}: escolhe colunas/expressões.
+    \item \texttt{FROM}: escolhe tabelas.
+    \item \texttt{WHERE}: filtra linhas.
+\end{itemize}
+
+\section{Exemplo visual: resultado de SELECT}
+Tabela \texttt{Aluno}:
+\[
+\begin{array}{|c|c|c|}
+\hline
+\text{matricula} & \text{nome} & \text{curso}\\
+\hline
+1 & \text{Ana} & \text{BTI}\\
+2 & \text{Bruno} & \text{Computacao}\\
+3 & \text{Carla} & \text{BTI}\\
+\hline
+\end{array}
+\]
+Consulta:
+\begin{verbatim}
+SELECT nome
+FROM Aluno
+WHERE curso = 'BTI'
+ORDER BY nome;
+\end{verbatim}
+Resultado:
+\[
+\begin{array}{|c|}
+\hline
+\text{nome}\\
+\hline
+\text{Ana}\\
+\text{Carla}\\
+\hline
+\end{array}
+\]
+
+\section{DISTINCT}
+Por padrão, SQL pode retornar duplicatas. Para remover repetições:
+\begin{verbatim}
+SELECT DISTINCT curso
+FROM Aluno;
+\end{verbatim}
+
+\section{Junções}
+Sem condição de junção, duas tabelas no \texttt{FROM} produzem produto cartesiano.
+
+\subsection{Junção implícita}
+\begin{verbatim}
+SELECT A.nome, C.nomeCurso
+FROM Aluno A, Curso C
+WHERE A.idCurso = C.idCurso;
+\end{verbatim}
+
+\subsection{Junção explícita}
+\begin{verbatim}
+SELECT A.nome, C.nomeCurso
+FROM Aluno A
+JOIN Curso C ON A.idCurso = C.idCurso;
+\end{verbatim}
+
+\section{Funções agregadas}
+Funções comuns:
+\begin{itemize}
+    \item \texttt{COUNT(*)}: conta linhas.
+    \item \texttt{SUM(coluna)}: soma.
+    \item \texttt{AVG(coluna)}: média.
+    \item \texttt{MIN(coluna)} e \texttt{MAX(coluna)}.
+\end{itemize}
+
+\section{GROUP BY e HAVING}
+\texttt{GROUP BY} agrupa linhas. \texttt{HAVING} filtra grupos.
+
+Exemplo:
+\begin{verbatim}
+SELECT curso, COUNT(*)
+FROM Aluno
+GROUP BY curso
+HAVING COUNT(*) > 5;
+\end{verbatim}
+
+Pegadinha: condição sobre agregação vai no \texttt{HAVING}, não no \texttt{WHERE}.
+
+\section{Subconsultas}
+Exemplo: alunos de cursos do centro CT.
+\begin{verbatim}
+SELECT nome
+FROM Aluno
+WHERE idCurso IN (
+    SELECT idCurso
+    FROM Curso
+    WHERE centro = 'CT'
+);
+\end{verbatim}
+
+\section{INSERT, UPDATE e DELETE}
+\subsection{INSERT}
+\begin{verbatim}
+INSERT INTO Aluno VALUES (1, 'Ana', 'BTI');
+\end{verbatim}
+
+\subsection{UPDATE}
+\begin{verbatim}
+UPDATE Aluno
+SET curso = 'Computacao'
+WHERE matricula = 10;
+\end{verbatim}
+Sem \texttt{WHERE}, atualiza todas as linhas.
+
+\subsection{DELETE}
+\begin{verbatim}
+DELETE FROM Aluno
+WHERE matricula = 10;
+\end{verbatim}
+Sem \texttt{WHERE}, remove todas as linhas.
+
+\section{Restrições de integridade}
+\begin{itemize}
+    \item \textbf{PRIMARY KEY}: identifica unicamente uma linha.
+    \item \textbf{FOREIGN KEY}: referencia chave de outra tabela.
+    \item \textbf{NOT NULL}: impede valor nulo.
+    \item \textbf{UNIQUE}: impede repetição.
+\end{itemize}
+
+Exemplo:
+\begin{verbatim}
+CREATE TABLE Aluno (
+    matricula INT PRIMARY KEY,
+    nome VARCHAR(100),
+    idCurso INT,
+    FOREIGN KEY (idCurso) REFERENCES Curso(idCurso)
+);
+\end{verbatim}
+
+\section{NULL}
+Para testar \texttt{NULL}, use \texttt{IS NULL} ou \texttt{IS NOT NULL}. Não use \texttt{= NULL}.
+
+\begin{verbatim}
+SELECT nome
+FROM Aluno
+WHERE curso IS NULL;
+\end{verbatim}
+
+\section{Pegadinhas comuns}
+\begin{itemize}
+    \item \texttt{WHERE} filtra linhas; \texttt{HAVING} filtra grupos.
+    \item \texttt{DELETE} remove linhas; \texttt{DROP TABLE} remove tabela.
+    \item \texttt{UPDATE} sem \texttt{WHERE} altera todas as linhas.
+    \item \texttt{COUNT(DISTINCT curso)} conta cursos distintos.
+    \item Produto cartesiano aparece quando falta condição de junção.
+\end{itemize}
+
+\section{Desafios}
+\subsection*{Desafio 1}
+Considere:
+\[
+Aluno(\text{matricula},\text{nome},\text{idCurso})
+\]
+\[
+Curso(\text{idCurso},\text{nomeCurso})
+\]
+Escreva a consulta que retorna os nomes dos alunos do curso BTI.
+
+\subsection*{Desafio 2}
+Dada a tabela \texttt{Matricula(idAluno, disciplina, nota)}, escreva uma consulta que retorna disciplinas com média maior ou igual a 7.
+
+\section{Resolução dos desafios}
+\textbf{Desafio 1}:
+\begin{verbatim}
+SELECT A.nome
+FROM Aluno A
+JOIN Curso C ON A.idCurso = C.idCurso
+WHERE C.nomeCurso = 'BTI';
+\end{verbatim}
+
+\textbf{Desafio 2}:
+\begin{verbatim}
+SELECT disciplina, AVG(nota)
+FROM Matricula
+GROUP BY disciplina
+HAVING AVG(nota) >= 7;
+\end{verbatim}
+
+\section{Checklist final}
+\begin{itemize}
+    \item Sei diferenciar DDL, DML e VDL?
+    \item Sei prever resultado de \texttt{SELECT}?
+    \item Sei identificar junção correta?
+    \item Sei usar \texttt{GROUP BY} e \texttt{HAVING}?
+    \item Sei o risco de \texttt{UPDATE} e \texttt{DELETE} sem \texttt{WHERE}?
+\end{itemize}
+
+\end{document}

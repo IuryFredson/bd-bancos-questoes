@@ -1,0 +1,204 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{multicol}
+\geometry{margin=2.2cm}
+\setlist{itemsep=0.25em, topsep=0.3em}
+\title{Aula 11 -- Técnicas de Programação SQL}
+\author{Banco de Dados -- Guia de Revisão}
+\date{}
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Objetivo da aula}
+Esta aula mostra como programas acessam bancos de dados. O foco é entender a diferença entre SQL interativo e SQL usado dentro de aplicações, além de JDBC, SQL embutido, cursores, Hibernate, procedures e SQL Injection.
+
+\section{Ideia central}
+Na prática, usuários raramente digitam SQL diretamente. Aplicações executam SQL por meio de uma linguagem hospedeira, como Java, C, C++ ou Python.
+
+\section{Linguagem hospedeira e sublinguagem de dados}
+\begin{itemize}
+    \item \textbf{Linguagem hospedeira}: linguagem geral da aplicação, como Java.
+    \item \textbf{Sublinguagem de dados}: SQL usado para acessar o banco.
+\end{itemize}
+
+\section{Descompasso de impedância}
+Ocorre porque linguagens de programação e bancos relacionais representam dados de formas diferentes.
+
+Exemplo:
+\begin{itemize}
+    \item Java usa objetos, listas, tipos, referências.
+    \item SQL retorna tabelas, linhas e colunas.
+\end{itemize}
+
+Por isso são necessários cursores, iteradores, \texttt{ResultSet} ou frameworks ORM.
+
+\section{SQL embutido}
+SQL embutido coloca comandos SQL dentro de uma linguagem hospedeira. Em C, por exemplo, comandos podem aparecer com \texttt{EXEC SQL}.
+
+Conceitos importantes:
+\begin{itemize}
+    \item Variáveis compartilhadas entre programa e SQL.
+    \item Pré-processador para separar comandos SQL.
+    \item \texttt{SQLCODE} ou \texttt{SQLSTATE} para erros.
+    \item Cursor para resultados com várias linhas.
+\end{itemize}
+
+\section{Cursores}
+Cursores permitem processar resultado linha por linha.
+
+Fluxo típico:
+\begin{verbatim}
+DECLARE cursor
+OPEN cursor
+FETCH cursor
+CLOSE cursor
+\end{verbatim}
+
+\texttt{FETCH} avança para a próxima tupla.
+
+\section{SQL dinâmica}
+SQL dinâmica permite montar comandos em tempo de execução. É útil quando a consulta depende de escolhas do usuário, mas aumenta riscos se for feita com concatenação insegura.
+
+\section{JDBC}
+JDBC é uma API Java para acesso a banco de dados.
+
+Fluxo comum:
+\begin{enumerate}
+    \item Abrir \texttt{Connection}.
+    \item Criar \texttt{Statement} ou \texttt{PreparedStatement}.
+    \item Executar comando.
+    \item Processar \texttt{ResultSet}, se houver.
+    \item Fechar recursos.
+\end{enumerate}
+
+\subsection{Exemplo visual: consulta segura}
+\begin{verbatim}
+Connection con = DriverManager.getConnection(url, user, pass);
+PreparedStatement ps = con.prepareStatement(
+    "SELECT * FROM Aluno WHERE matricula = ?"
+);
+ps.setInt(1, matricula);
+ResultSet rs = ps.executeQuery();
+while (rs.next()) {
+    String nome = rs.getString("nome");
+}
+\end{verbatim}
+
+\begin{itemize}
+    \item \texttt{Connection}: conexão com o banco.
+    \item \texttt{PreparedStatement}: comando parametrizado.
+    \item \texttt{?}: parâmetro.
+    \item \texttt{setInt(1,...)}: preenche o primeiro parâmetro.
+    \item \texttt{ResultSet}: linhas retornadas.
+\end{itemize}
+
+\section{executeQuery e executeUpdate}
+\begin{itemize}
+    \item \texttt{executeQuery()}: usado para \texttt{SELECT}; retorna \texttt{ResultSet}.
+    \item \texttt{executeUpdate()}: usado para \texttt{INSERT}, \texttt{UPDATE}, \texttt{DELETE}; retorna quantidade de linhas afetadas.
+\end{itemize}
+
+\section{Transações em JDBC}
+Para controlar transação manualmente:
+\begin{verbatim}
+con.setAutoCommit(false);
+try {
+    // comandos SQL
+    con.commit();
+} catch (Exception e) {
+    con.rollback();
+}
+\end{verbatim}
+
+\section{SQL Injection}
+SQL Injection ocorre quando entrada externa é concatenada diretamente no SQL.
+
+Código vulnerável:
+\begin{verbatim}
+String sql = "SELECT * FROM Usuario WHERE login='" + login +
+             "' AND senha='" + senha + "'";
+\end{verbatim}
+
+Entrada perigosa:
+\begin{verbatim}
+' OR '1'='1
+\end{verbatim}
+
+Correção: usar \texttt{PreparedStatement} com parâmetros.
+
+\section{Hibernate e ORM}
+Hibernate é um framework de mapeamento objeto-relacional. Ele associa classes Java a tabelas relacionais.
+
+Exemplo conceitual:
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Java & Banco Relacional \\
+\hline
+Classe \texttt{Aluno} & Tabela \texttt{Aluno} \\
+Objeto & Linha \\
+Atributo do objeto & Coluna \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Procedures, funções e SQL/PSM}
+Procedures e funções armazenadas ficam no SGBD e podem ser chamadas por aplicações.
+
+Vantagens:
+\begin{itemize}
+    \item centralizam lógica perto dos dados;
+    \item reduzem repetição de código;
+    \item podem melhorar controle e padronização.
+\end{itemize}
+
+\section{Senhas e dados sensíveis}
+Senhas não devem ser armazenadas em texto puro. Prática melhor: hash com salt.
+
+Fluxo:
+\begin{enumerate}
+    \item Usuário digita senha.
+    \item Sistema combina senha com salt.
+    \item Calcula hash.
+    \item Compara com hash armazenado.
+\end{enumerate}
+
+\section{Pegadinhas comuns}
+\begin{itemize}
+    \item \texttt{PreparedStatement} não serve só para performance; também ajuda contra SQL Injection.
+    \item \texttt{ResultSet} começa antes da primeira linha; precisa de \texttt{rs.next()}.
+    \item \texttt{executeQuery} é para consulta; \texttt{executeUpdate} é para alteração.
+    \item Hibernate não elimina o modelo relacional; ele mapeia objetos para relações.
+\end{itemize}
+
+\section{Desafios}
+\subsection*{Desafio 1}
+Explique por que o código abaixo é vulnerável:
+\begin{verbatim}
+String sql = "DELETE FROM Employee WHERE ssn=" + ssn;
+\end{verbatim}
+
+\subsection*{Desafio 2}
+Qual método JDBC você usaria para executar um \texttt{SELECT}? E para executar um \texttt{UPDATE}?
+
+\section{Resolução dos desafios}
+\textbf{Desafio 1}: concatena entrada diretamente no SQL. Um valor malicioso pode alterar a condição e afetar mais linhas que o esperado.
+
+\textbf{Desafio 2}: \texttt{executeQuery()} para \texttt{SELECT}; \texttt{executeUpdate()} para \texttt{UPDATE}, \texttt{INSERT} e \texttt{DELETE}.
+
+\section{Checklist final}
+\begin{itemize}
+    \item Sei explicar descompasso de impedância?
+    \item Sei a função de \texttt{Connection}, \texttt{PreparedStatement} e \texttt{ResultSet}?
+    \item Sei reconhecer SQL Injection?
+    \item Sei diferenciar cursor, JDBC, SQLJ, Hibernate e stored procedure?
+\end{itemize}
+
+\end{document}
